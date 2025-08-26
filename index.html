@@ -25,18 +25,33 @@
   <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
 
   <!-- Estilos (sin inline para cumplir CSP) -->
-  <link rel="stylesheet" href="./styles.css?v=sec9">
+  <link rel="stylesheet" href="./styles.css?v=sec10">
 </head>
 
 <body>
-  <!-- Accesibilidad: aparece con Tab y salta directo al juego (estilos en styles.css) -->
+  <!-- Accesibilidad: aparece con Tab y salta directo al juego -->
   <a href="#juego" class="skip">Saltar directamente al juego</a>
 
   <!-- Botón + modal “¿Por qué este juego?” -->
-  <button id="aboutBtn" class="btn secundario fixed-top-right" aria-haspopup="dialog">
-    ¿Por qué este juego?
+ 
+<div class="fixed-top-right">
+  <button id="aboutBtn"
+          class="btn-ayuda"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="aboutModal"
+          aria-expanded="false"
+          aria-label="¿Por qué este juego?">
+    ?
   </button>
-  <div id="aboutModal" aria-hidden="true" role="dialog" aria-labelledby="aboutTitle" class="modal">
+</div>
+
+  <div id="aboutModal"
+       aria-hidden="true"
+       aria-modal="true"
+       role="dialog"
+       aria-labelledby="aboutTitle"
+       class="modal">
     <div class="modal-card" role="document">
       <h2 id="aboutTitle" class="mt0">¿Por qué este juego?</h2>
       <p>Este juego ejercita <strong>categorización</strong> e <strong>inhibición</strong>.
@@ -56,7 +71,7 @@
         [2] Anguera J.A. et al., <em>Nature</em>, 2013 (multitarea adaptativa).
       </small></p>
       <div class="modal-actions">
-        <button id="aboutClose" class="btn principal">Entendido</button>
+        <button id="aboutClose" class="btn principal" type="button">Entendido</button>
       </div>
     </div>
   </div>
@@ -90,9 +105,9 @@
         <!-- Botón de tema: el texto lo ajusta app.js (muestra la ACCIÓN) -->
         <button id="themeToggle" class="btn secundario" type="button" aria-pressed="false">Cambiar tema</button>
 
-        <button id="btnComenzar" class="btn principal">Comenzar</button>
-        <button id="btnReiniciar" class="btn secundario" hidden>Volver a jugar</button>
-        <button id="btnPista" class="btn info" hidden>Mostrar pista</button>
+        <button id="btnComenzar" class="btn principal" type="button">Comenzar</button>
+        <button id="btnReiniciar" class="btn secundario" type="button" hidden>Volver a jugar</button>
+        <button id="btnPista" class="btn info" type="button" hidden>Mostrar pista</button>
       </section>
     </header>
 
@@ -117,9 +132,9 @@
     </footer>
   </main>
 
-  <noscript><p style="margin:1rem">Este juego necesita JavaScript para funcionar.</p></noscript>
+  <noscript><p>Este juego necesita JavaScript para funcionar.</p></noscript>
 
   <!-- Script (defer; subí la versión cuando actualices) -->
-  <script src="./app.js?v=sec9" defer></script>
+  <script src="./app.js?v=sec10" defer></script>
 </body>
 </html>

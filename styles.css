@@ -250,3 +250,54 @@ select {
   background-size: 1rem;
   padding-right: 2.5rem; /* espacio para la flecha */
 }
+
+/* === Botón de ayuda (desktop por defecto) === */
+.fixed-top-right .btn-ayuda {
+  background: var(--btn-info-bg);
+  color: var(--btn-info-fg);
+  border: none;
+  border-radius: .8rem;
+  font-weight: 700;
+  padding: .6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.fixed-top-right .btn-ayuda:hover {
+  filter: brightness(1.1);
+}
+
+/* Botón de ayuda circular (desktop + móvil) */
+.fixed-top-right {
+  position: fixed;   /* siempre fijo */
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+}
+
+.btn-ayuda {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%; /* círculo perfecto */
+  border: none;
+  cursor: pointer;
+  background: var(--btn-info-bg);
+  color: var(--btn-info-fg);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 44px; /* centra el "?" si es texto */
+  display: flex;     /* centra contenido si usás SVG */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-ayuda:hover,
+.btn-ayuda:focus-visible {
+  filter: brightness(1.1);
+  outline: 3px solid var(--focus-color);
+  outline-offset: 2px;
+}
