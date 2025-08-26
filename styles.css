@@ -1,0 +1,229 @@
+/* ===== FALLTEM: tema accesible + marca ===== */
+:root{
+  color-scheme: light dark;
+  --fs-base: clamp(16px, 1.1vw + 12px, 19px);
+  --space: clamp(10px, 1vw + 6px, 16px);
+
+  /* Tipografía */
+  --font: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* Neutros Dark (por defecto) */
+  --bg:#0b0b0b; --fg:#f5f5f5; --muted:#cfcfcf;
+  --card:#171717; --border:#2a2a2a;
+  --opt-bg:#222; --opt-border:#333;
+
+  /* Colores FALLTEM (aprox) */
+  --brand-green:#95D36A;   /* primario */
+  --brand-teal:#42B7D4;    /* secundario */
+  --brand-orange:#E7A357;  /* info/acento */
+
+  /* Botones (alto contraste interno en dark) */
+  --btn-primary-bg: var(--brand-green);  --btn-primary-fg:#0a0a0a;
+  --btn-sec-bg:     var(--brand-teal);   --btn-sec-fg:#0a0a0a;
+  --btn-info-bg:    var(--brand-orange); --btn-info-fg:#0a0a0a;
+
+  /* Estados/feedback y foco */
+  --ok:#34d399;    /* verde claro legible en dark */
+  --bad:#f87171;   /* rojo claro legible en dark */
+  --progress: var(--brand-green);
+  --focus-color: var(--brand-teal);
+}
+
+/* Light: fondo blanco, texto oscuro; botones con contraste AA */
+[data-theme="light"]{
+  --bg:#ffffff; --fg:#111111; --muted:#374151;
+  --card:#ffffff; --border:#dddddd;
+  --opt-bg:#ffffff; --opt-border:#cfcfcf;
+
+  /* Para AA, oscurecemos secundario/info en claro y texto blanco */
+  --btn-primary-bg: var(--brand-green);  --btn-primary-fg:#0a0a0a;
+  --btn-sec-bg:#1098ad;   --btn-sec-fg:#ffffff;   /* teal más oscuro = mejor contraste */
+  --btn-info-bg:#2563eb;  --btn-info-fg:#ffffff;  /* azul 600 = AA */
+
+  --ok:#166534;    /* verde oscuro en claro */
+  --bad:#b91c1c;   /* rojo oscuro en claro */
+  --progress:#86c658;
+  --focus-color:#1d4ed8;  /* outline visible en claro */
+}
+
+/* ===== Base ===== */
+*{box-sizing:border-box}
+html,body{height:100%}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family: var(--font);
+  font-size:var(--fs-base); line-height:1.5;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + var(--space));
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wrap{
+  max-width: 900px;
+  width: min(900px, calc(100% - 2*var(--space)));
+  margin: 0 auto;
+  padding: var(--space);
+}
+
+.header h1{
+  font-size: clamp(1.6rem, 1.6vw + 1rem, 2.1rem);
+  margin:.5rem 0
+}
+.intro{margin:0 0 var(--space); color:var(--fg)}
+
+.controles{
+  display:grid; gap:.6rem 1rem; align-items:center;
+  grid-template-columns: 1fr; margin: var(--space) 0;
+}
+label{opacity:.95; display:block}
+select{
+  background:var(--card); color:var(--fg);
+  border:1px solid var(--border); padding:.6rem; border-radius:.6rem; width:100%;
+}
+
+.btn{
+  border:0; border-radius:.9rem; cursor:pointer; font-weight:700;
+  padding:.8rem 1rem; min-height:48px;
+}
+.btn.principal{ background:var(--btn-primary-bg); color:var(--btn-primary-fg); }
+.btn.secundario{ background:var(--btn-sec-bg);   color:var(--btn-sec-fg); }
+.btn.info{       background:var(--btn-info-bg);  color:var(--btn-info-fg); }
+.btn:focus-visible{ outline:3px solid var(--focus-color); outline-offset:2px; }
+
+.juego{display:grid; gap:var(--space)}
+.tarjeta{
+  background:var(--card); border:1px solid var(--border);
+  border-radius:1rem; padding:var(--space)
+}
+.pregunta{font-size:clamp(1.2rem, 1.1vw + 1rem, 1.6rem); margin:0 0 .5rem}
+
+.opciones{
+  display:grid; gap:.6rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 820px){ .opciones{ grid-template-columns: 1fr 1fr; } }
+
+.opciones button{
+  text-align:left; background:var(--opt-bg); color:var(--fg);
+  border:2px solid var(--opt-border); border-radius:.8rem;
+  padding:1rem; font-size:1.05rem; line-height:1.35; cursor:pointer; width:100%;
+}
+.opciones button:focus-visible{ outline:3px solid var(--focus-color); outline-offset:2px; }
+.opciones button.correcta.marcada{
+  border-color:var(--ok);
+  box-shadow:0 0 0 2px transparent, inset 0 0 0 2px var(--ok)
+}
+.opciones button.incorrecta.marcada{
+  border-color:var(--bad);
+  box-shadow:0 0 0 2px transparent, inset 0 0 0 2px var(--bad)
+}
+
+.feedback{font-size:1rem; margin:.5rem 0 0}
+.feedback.ok{color:var(--ok)}
+.feedback.bad{color:var(--bad)}
+.acciones{margin-top:.8rem}
+
+.progresoBar{height:10px; background:var(--opt-border); border-radius:999px; overflow:hidden; margin:.6rem 0}
+.progresoBar>div{height:100%; background:var(--progress); width:0%}
+
+.estado{margin-top:.6rem}
+.estado p{margin:.2rem 0}
+.muted{color:var(--muted)}
+.sep{border:none; border-top:1px solid var(--border); margin: .6rem 0}
+
+/* Modal y botón de ayuda */
+.fixed-top-right{position:fixed; right:12px; top:12px; z-index:10}
+.modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:20}
+.modal[aria-hidden="false"]{display:block}
+.modal-card{
+  max-width:min(820px, 100% - 2*var(--space));
+  margin:5vh auto; background:var(--card); color:var(--fg);
+  padding:var(--space); border-radius:12px; border:1px solid var(--border)
+}
+.mt0{margin-top:0}
+.modal-actions{display:flex; gap:8px; justify-content:flex-end}
+
+/* Tamaño muy grande opcional */
+/* Escala global para rem (de 16px → 18px aprox.) */
+html.muy-grande { font-size: 125%; }  /* 16 * 1.125 = 18px */
+
+/* Sube un poco la base que usa el <body> (más legible) */
+html.muy-grande body{
+  --fs-base: clamp(19px, 1.2vw + 14px, 24px);
+}
+/* Desktop: controles ordenados y botón de ayuda integrado */
+@media (min-width: 900px){
+  .controles{
+    grid-template-columns: 1fr 1fr;
+    max-width: 680px;
+    margin-inline: auto;
+  }
+  .controles .btn{ justify-self: start }
+  .fixed-top-right{ position: static; float: right; margin-top: .2rem }
+}
+
+/* Skip link accesible */
+.skip{position:absolute;left:-9999px;top:auto}
+.skip:focus{left:12px;top:12px;background:var(--btn-primary-bg);color:var(--btn-primary-fg);
+            padding:8px 10px;border-radius:8px;z-index:1000}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+
+/* Footer mini tipo banner (discreto y legible) */
+.mini-credit{
+  margin-top:.5rem;
+  padding:.35rem 0;
+  border-top:1px solid var(--border);
+  font-size:.78em;                /* chico pero accesible */
+  line-height:1.25;
+  color:var(--muted);
+}
+.mini-credit p{ margin:0 }
+.mini-credit a{
+  color:inherit;
+  text-decoration:underline;
+  font-weight:600;
+}
+.mini-label{ font-weight:700; color:var(--fg) }
+
+/* Ajuste leve en desktop */
+@media (min-width: 900px){
+  .mini-credit{ font-size:.75em; }
+}
+
+/* En claro, asegurar buen contraste del link */
+[data-theme="light"] .mini-credit a{ color:#0f172a }
+
+/* Habilitamos consultas por contenedor */
+.controles, .juego { container-type: inline-size; }
+
+/* Si el contenedor de .opciones tiene suficiente ancho → 2 columnas */
+@container (min-width: 560px){
+  .opciones{ grid-template-columns: 1fr 1fr; }
+}
+
+/* Por si aparece una palabra muy larga o un término compuesto */
+.opciones button{
+  white-space: normal;
+  overflow-wrap: anywhere; /* evita que “empuje” el layout */
+}
+
+/* Si algún día agregás imágenes en tarjetas/modales */
+.tarjeta img, .modal-card img{
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.wrap{
+  max-width: 900px;
+  width: min(900px, calc(100% - 2*var(--space)));
+  margin: 0 auto;
+  padding: var(--space);
+}
+/* Skip link accesible (sin inline para cumplir CSP) */
+.skip{position:absolute;left:-9999px;top:auto}
+.skip:focus{
+  left:12px;top:12px;background:var(--btn-primary-bg);color:var(--btn-primary-fg);
+  padding:8px 10px;border-radius:8px;z-index:1000
+}

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Juego cognitivo accesible para personas mayores: categorización e inhibición, sin datos personales."/>
+  <meta name="theme-color" content="#0b0b0b"/>
+  <meta name="color-scheme" content="dark light"/>
+
+  <!-- Seguridad (funciona en MAMP y en GitHub Pages) -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';
+                 img-src 'self' data:; connect-src 'self'; object-src 'none';
+                 base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+
+  <!-- Open Graph / Social (sin imagen por ahora) -->
+  <meta property="og:title" content="¿Cuál es el intruso? — FALLTEM">
+  <meta property="og:description" content="Juego cognitivo accesible: categorización e inhibición, sin datos personales.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mrmatiasos.github.io/juego-intruso/">
+  <meta property="og:site_name" content="FALLTEM — Juegos Cognitivos">
+  <meta name="twitter:card" content="summary">
+
+  <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
+
+  <!-- Estilos (sin inline para cumplir CSP) -->
+  <link rel="stylesheet" href="./styles.css?v=sec9">
+</head>
+
+<body>
+  <!-- Accesibilidad: aparece con Tab y salta directo al juego (estilos en styles.css) -->
+  <a href="#juego" class="skip">Saltar directamente al juego</a>
+
+  <!-- Botón + modal “¿Por qué este juego?” -->
+  <button id="aboutBtn" class="btn secundario fixed-top-right" aria-haspopup="dialog">
+    ¿Por qué este juego?
+  </button>
+  <div id="aboutModal" aria-hidden="true" role="dialog" aria-labelledby="aboutTitle" class="modal">
+    <div class="modal-card" role="document">
+      <h2 id="aboutTitle" class="mt0">¿Por qué este juego?</h2>
+      <p>Este juego ejercita <strong>categorización</strong> e <strong>inhibición</strong>.
+         Recomendamos sesiones cortas (8–10 rondas), <strong>2–3 veces por semana</strong>.</p>
+      <ul>
+        <li>El entrenamiento cognitivo computarizado en mayores sanos muestra
+            <strong>mejoras modestas</strong> cuando está bien diseñado.<sup>[1]</sup></li>
+        <li>Entrenos de <strong>atención/control</strong> han mostrado
+            <strong>beneficios sostenidos</strong> en adultos mayores.<sup>[2]</sup></li>
+        <li><strong>La dosis importa</strong>: sesiones cortas y regulares; evitar sobreentrenar.<sup>[1]</sup></li>
+      </ul>
+      <p class="muted"><small>Actividad <strong>lúdica</strong>; no es práctica médica.
+         No almacenamos datos personales.</small></p>
+      <hr class="sep">
+      <p class="muted"><small><strong>Referencias</strong><br>
+        [1] Lampit A. et al., <em>PLOS Medicine</em>, 2014 (meta-análisis).<br>
+        [2] Anguera J.A. et al., <em>Nature</em>, 2013 (multitarea adaptativa).
+      </small></p>
+      <div class="modal-actions">
+        <button id="aboutClose" class="btn principal">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap" role="main" aria-labelledby="titulo">
+    <header class="header">
+      <h1 id="titulo">¿Cuál es el intruso?</h1>
+      <p class="intro">Elegí el elemento que <strong>no pertenece</strong> al grupo. Sin límite de tiempo.</p>
+
+      <section class="controles" aria-label="Controles del juego">
+        <label for="rondas">Rondas:</label>
+        <select id="rondas" aria-label="Elegir número de rondas">
+          <option value="6">6 (corto)</option>
+          <option value="8" selected>8 (recomendado)</option>
+          <option value="10">10 (completo)</option>
+        </select>
+
+        <label for="opciones">Opciones:</label>
+        <select id="opciones" aria-label="Elegir cantidad de opciones">
+          <option value="3">3 (fácil)</option>
+          <option value="4" selected>4 (medio)</option>
+          <option value="5">5 (reto)</option>
+        </select>
+
+        <label for="tamano">Tamaño:</label>
+        <select id="tamano" aria-label="Elegir tamaño de texto">
+          <option value="grande" selected>Grande</option>
+          <option value="muy-grande">Muy grande</option>
+        </select>
+
+        <!-- Botón de tema: el texto lo ajusta app.js (muestra la ACCIÓN) -->
+        <button id="themeToggle" class="btn secundario" type="button" aria-pressed="false">Cambiar tema</button>
+
+        <button id="btnComenzar" class="btn principal">Comenzar</button>
+        <button id="btnReiniciar" class="btn secundario" hidden>Volver a jugar</button>
+        <button id="btnPista" class="btn info" hidden>Mostrar pista</button>
+      </section>
+    </header>
+
+    <section id="juego" class="juego" aria-live="polite"></section>
+
+    <section id="estado" class="estado" aria-live="polite">
+      <p>Progreso: <span id="progreso">0/0</span> · Aciertos: <span id="aciertos">0</span></p>
+    </section>
+
+    <!-- Footer mini (crédito + aviso) -->
+    <footer class="mini-credit" role="contentinfo" aria-label="Créditos y aviso">
+      <p>
+        <strong class="mini-label">Créditos y aviso:</strong>
+        Desarrollado originalmente para
+        <a href="https://falltem.org/" target="_blank" rel="noopener noreferrer">FALLTEM</a>
+        • Código abierto (MIT)
+        • Uso libre por otras ONG
+        • Actividad lúdica; no es práctica médica
+        • Sin recolección de datos personales por defecto
+        • Integraciones adicionales: responsabilidad de cada organización
+      </p>
+    </footer>
+  </main>
+
+  <noscript><p style="margin:1rem">Este juego necesita JavaScript para funcionar.</p></noscript>
+
+  <!-- Script (defer; subí la versión cuando actualices) -->
+  <script src="./app.js?v=sec9" defer></script>
+</body>
+</html>
