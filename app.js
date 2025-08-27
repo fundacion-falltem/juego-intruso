@@ -368,3 +368,10 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(next);
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  // —— Versión centralizada ——
+  const VERSION = "v1.2";
+  const versionEl = document.getElementById('versionLabel');
+  if (versionEl) versionEl.textContent = VERSION;
+  });
