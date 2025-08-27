@@ -14,7 +14,7 @@
                  base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin"/>
 
-  <!-- Open Graph / Social (sin imagen por ahora) -->
+  <!-- Open Graph / Social -->
   <meta property="og:title" content="¿Cuál es el intruso? — FALLTEM">
   <meta property="og:description" content="Juego cognitivo accesible: categorización e inhibición, sin datos personales.">
   <meta property="og:type" content="website">
@@ -25,33 +25,27 @@
   <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
 
   <!-- Estilos (sin inline para cumplir CSP) -->
-  <link rel="stylesheet" href="./styles.css?v=sec10">
+  <link rel="stylesheet" href="./styles.css?v=sec12">
 </head>
 
 <body>
   <!-- Accesibilidad: aparece con Tab y salta directo al juego -->
   <a href="#juego" class="skip">Saltar directamente al juego</a>
 
-  <!-- Botón + modal “¿Por qué este juego?” -->
- 
-<div class="fixed-top-right">
-  <button id="aboutBtn"
-          class="btn-ayuda"
-          type="button"
-          aria-haspopup="dialog"
-          aria-controls="aboutModal"
-          aria-expanded="false"
-          aria-label="¿Por qué este juego?">
-    ?
-  </button>
-</div>
+  <!-- Botón de ayuda fijo -->
+  <div class="fixed-top-right">
+    <button id="aboutBtn"
+            class="btn-ayuda"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="aboutModal"
+            aria-expanded="false"
+            aria-label="¿Por qué este juego?">?</button>
+  </div>
 
-  <div id="aboutModal"
-       aria-hidden="true"
-       aria-modal="true"
-       role="dialog"
-       aria-labelledby="aboutTitle"
-       class="modal">
+  <!-- Modal ayuda -->
+  <div id="aboutModal" class="modal" role="dialog" aria-modal="true"
+       aria-hidden="true" aria-labelledby="aboutTitle">
     <div class="modal-card" role="document">
       <h2 id="aboutTitle" class="mt0">¿Por qué este juego?</h2>
       <p>Este juego ejercita <strong>categorización</strong> e <strong>inhibición</strong>.
@@ -102,17 +96,25 @@
           <option value="muy-grande">Muy grande</option>
         </select>
 
-        <!-- Botón de tema: el texto lo ajusta app.js (muestra la ACCIÓN) -->
+        <!-- Botón de tema -->
         <button id="themeToggle" class="btn secundario" type="button" aria-pressed="false">Cambiar tema</button>
 
         <button id="btnComenzar" class="btn principal" type="button">Comenzar</button>
         <button id="btnReiniciar" class="btn secundario" type="button" hidden>Volver a jugar</button>
-        <button id="btnPista" class="btn info" type="button" hidden>Mostrar pista</button>
       </section>
     </header>
 
+    <!-- Área donde se renderiza la tarjeta de la ronda -->
     <section id="juego" class="juego" aria-live="polite"></section>
 
+    <!-- Acciones de la ronda: Pista + Siguiente -->
+    <div id="acciones" class="acciones" hidden>
+      <button id="btnPista" class="btn info" type="button">Mostrar pista</button>
+      <!-- SUGERENCIA: si tu app.js crea el botón Siguiente, insertalo aquí:
+           document.getElementById('acciones').appendChild(btnSiguiente) -->
+    </div>
+
+    <!-- Estado/puntaje -->
     <section id="estado" class="estado" aria-live="polite">
       <p>Progreso: <span id="progreso">0/0</span> · Aciertos: <span id="aciertos">0</span></p>
     </section>
@@ -121,7 +123,7 @@
     <footer class="mini-credit" role="contentinfo" aria-label="Créditos y aviso">
       <p>
         <strong class="mini-label">Créditos y aviso:</strong>
-        Desarrollado originalmente para
+        Desarrollado por
         <a href="https://falltem.org/" target="_blank" rel="noopener noreferrer">FALLTEM</a>
         • Código abierto (MIT)
         • Uso libre por otras ONG
@@ -134,7 +136,7 @@
 
   <noscript><p>Este juego necesita JavaScript para funcionar.</p></noscript>
 
-  <!-- Script (defer; subí la versión cuando actualices) -->
-  <script src="./app.js?v=sec10" defer></script>
+  <!-- Script -->
+  <script src="./app.js?v=sec12" defer></script>
 </body>
 </html>

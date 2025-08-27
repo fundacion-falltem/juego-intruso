@@ -323,3 +323,18 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(next);
   });
 });
+
+// Cuando se hace clic en "Comenzar"
+document.getElementById("btnComenzar").addEventListener("click", () => {
+  // Mostrar la sección de acciones (Pista + Siguiente)
+  const acciones = document.getElementById("acciones");
+  acciones.hidden = false;
+
+  // Mostrar solo "Mostrar pista" al inicio
+  document.getElementById("btnPista").hidden = false;
+
+  // (si tenés lógica para armar la primera ronda, mantenela acá también)
+});
+document.getElementById("acciones").hidden = true;
+document.getElementById("btnPista").hidden = true;
+
