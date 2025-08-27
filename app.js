@@ -1,7 +1,7 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // ------- Catálogo (inmutable) -------
+  // ------- Catálogo -------
   const CAT = Object.freeze({
     "Frutas": Object.freeze(["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"]),
     "Verduras": Object.freeze(["zanahoria","tomate","lechuga","cebolla","papa","zapallo","pepino","berenjena","espinaca","brócoli"]),
@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const aciertosEl  = document.getElementById('aciertos');
   const btnComenzar = document.getElementById('btnComenzar');
   const btnReiniciar= document.getElementById('btnReiniciar');
-  const btnPista    = document.getElementById('btnPista');
   const selRondas   = document.getElementById('rondas');
   const selOpc      = document.getElementById('opciones');
   const selTam      = document.getElementById('tamano');
@@ -90,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return opciones;
   }
 
-  // ------- Render seguro (sin innerHTML) -------
+  // ------- Render seguro -------
   function el(tag, cls, text){
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -98,82 +97,86 @@ document.addEventListener('DOMContentLoaded', () => {
     return n;
   }
 
+  function montarAcciones(tarjeta, fb){
+    // Clonar la plantilla de acciones
+    const tpl = document.querySelector('#accionesPlantilla .acciones');
+    const acciones = tpl.cloneNode(true);
+
+    // Botón Pista
+    const btnPista = acciones.querySelector('.btn-pista');
+    if (btnPista) {
+      btnPista.hidden = false;
+      btnPista.addEventListener('click', ()=>{
+        fb.className = 'feedback';
+        fb.textContent = `Pista: categoría del grupo = “${categoriaActual}”.`;
+        fb.focus();
+      });
+    }
+
+    // Botón Siguiente
+    const next = el('button', 'btn principal', 'Siguiente');
+    next.disabled = true;
+    next.setAttribute('aria-disabled','true');
+    acciones.appendChild(next);
+
+    tarjeta.appendChild(acciones);
+    return next;
+  }
+
   function renderPregunta(){
     if (ronda >= rondasTotales){ renderFin(); return; }
 
     const opciones = construirRonda();
 
-    // limpiar contenedor
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
 
     const tarjeta = el('div', 'tarjeta');
     tarjeta.setAttribute('role','group');
     tarjeta.setAttribute('aria-labelledby','enunciado');
 
-    // barra progreso
     const pb = el('div', 'progresoBar'); pb.setAttribute('aria-hidden','true');
     const fill = el('div'); pb.appendChild(fill); bar = fill; actualizar();
 
-    // enunciado
     const enunciado = el('p', 'pregunta'); enunciado.id = 'enunciado';
-    enunciado.appendChild(document.createTextNode('🧠 ¿Qué palabra '));
-    const strongNo = el('strong', null, 'no'); enunciado.appendChild(strongNo);
-    enunciado.appendChild(document.createTextNode(' pertenece al grupo?'));
+    enunciado.textContent = '🧠 ¿Qué palabra no pertenece al grupo?';
 
-    // opciones
-    const cont = el('div', 'opciones'); cont.id = 'ops';
+    const cont = el('div', 'opciones');
     opciones.forEach((op, i)=>{
       const b = el('button', op.ok ? 'correcta' : 'incorrecta');
       b.setAttribute('aria-label', `Opción ${i+1}: ${op.txt}`);
-      // contenido: "<strong>1.</strong> texto"
-      const num = el('strong', null, `${i+1}.`);
-      b.appendChild(num);
+      b.appendChild(el('strong', null, `${i+1}.`));
       b.appendChild(document.createTextNode(' ' + op.txt));
-      b.addEventListener('click', ()=> elegir(b, op));
+      b.addEventListener('click', ()=> elegir(b, op, fb, next));
       cont.appendChild(b);
     });
 
-    // feedback accesible
-    const fb = el('p', 'feedback'); fb.id = 'fb';
-    fb.setAttribute('role','status'); fb.setAttribute('aria-live','polite'); fb.setAttribute('aria-atomic','true'); fb.tabIndex = -1;
-
-    // acciones
-    const acciones = el('div', 'acciones');
-    const next = el('button', 'btn principal', 'Siguiente');
-    next.id = 'next'; next.disabled = true; next.setAttribute('aria-disabled','true');
-    acciones.appendChild(next);
+    const fb = el('p', 'feedback');
+    fb.setAttribute('role','status');
+    fb.setAttribute('aria-live','polite');
+    fb.setAttribute('aria-atomic','true');
+    fb.tabIndex = -1;
 
     tarjeta.appendChild(pb);
     tarjeta.appendChild(enunciado);
     tarjeta.appendChild(cont);
     tarjeta.appendChild(fb);
-    tarjeta.appendChild(acciones);
+
+    // Montar acciones dentro de la tarjeta
+    const next = montarAcciones(tarjeta, fb);
+
     juegoEl.appendChild(tarjeta);
 
-    // Atajos 1..5
+    // Atajos teclado
     const onKey = (e)=>{
       const n = Number.parseInt(e.key, 10);
       if(Number.isInteger(n) && n>=1 && n<=5){ cont.children[n-1]?.click(); }
     };
     document.addEventListener('keydown', onKey, {once:true});
-
-    // Pista (limpia handler anterior y usa sólo texto)
-    btnPista.hidden = false;
-    btnPista.replaceWith(btnPista.cloneNode(true));
-    const nuevoPista = document.getElementById('btnPista');
-    nuevoPista.addEventListener('click', ()=>{
-      fb.className = 'feedback';
-      fb.textContent = `Pista: categoría del grupo = “${categoriaActual}”.`;
-      fb.focus();
-    });
   }
 
-  function elegir(btn, op){
-    document.querySelectorAll('.opciones button').forEach(b=> { b.disabled = true; });
+  function elegir(btn, op, fb, next){
+    document.querySelectorAll('.opciones button').forEach(b=> b.disabled = true);
     btn.classList.add('marcada');
-
-    const fb = document.getElementById('fb');
-    const next = document.getElementById('next');
 
     if(op.ok){
       aciertos++;
@@ -187,11 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fb.focus();
     next.disabled = false;
     next.setAttribute('aria-disabled','false');
-    next.focus();
-
-    // limpiar listeners anteriores y avanzar
     next.replaceWith(next.cloneNode(true));
-    const nuevoNext = document.getElementById('next');
+    const nuevoNext = juegoEl.querySelector('.btn.principal');
     nuevoNext.addEventListener('click', ()=>{ ronda++; actualizar(); renderPregunta(); }, {once:true});
   }
 
@@ -199,25 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
 
     const tarjeta = el('div', 'tarjeta');
-    const p1 = el('p', 'pregunta', '🎉 ¡Buen trabajo!');
-    const p2 = el('p', null, `Tu resultado: `);
-    const s1 = el('strong', null, String(aciertos));
-    const s2 = el('strong', null, String(rondasTotales));
-    p2.appendChild(s1);
-    p2.appendChild(document.createTextNode(' de '));
-    p2.appendChild(s2);
-    p2.appendChild(document.createTextNode('.'));
-    const p3 = el('p', null, 'Puedes volver a jugar cambiando el tamaño de texto u opciones por pregunta.');
-
-    tarjeta.appendChild(p1); tarjeta.appendChild(p2); tarjeta.appendChild(p3);
+    tarjeta.appendChild(el('p','pregunta','🎉 ¡Buen trabajo!'));
+    const p2 = el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`);
+    tarjeta.appendChild(p2);
+    tarjeta.appendChild(el('p',null,'Puedes volver a jugar cambiando el tamaño de texto u opciones por pregunta.'));
     juegoEl.appendChild(tarjeta);
 
     btnReiniciar.hidden = false;
     btnComenzar.hidden = true;
-    btnPista.hidden = true;
   }
 
-  // ------- Preferencias & tamaño -------
+  // ------- Preferencias -------
   function aplicarTam(){
     const muy = selTam.value === 'muy-grande';
     document.documentElement.classList.toggle('muy-grande', muy);
@@ -227,16 +219,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function comenzar(){
     rondasTotales = Number(selRondas.value);
     nOpc = Number(selOpc.value);
-
     try{
       localStorage.setItem('intruso_rondas', selRondas.value);
       localStorage.setItem('intruso_opciones', selOpc.value);
     }catch{}
-
     ronda = 0; aciertos = 0; ultimaCategoria = null;
     btnReiniciar.hidden = true;
     btnComenzar.hidden = true;
-    btnPista.hidden = false;
     aplicarTam();
     renderPregunta();
   }
@@ -244,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------- Eventos -------
   btnComenzar?.addEventListener('click', comenzar);
   btnReiniciar?.addEventListener('click', ()=>{
-    btnComenzar.hidden = false; btnPista.hidden = true;
+    btnComenzar.hidden = false;
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
     aciertos = 0; ronda = 0; ultimaCategoria = null; actualizar();
   });
@@ -253,40 +242,29 @@ document.addEventListener('DOMContentLoaded', () => {
   selRondas?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_rondas', selRondas.value); }catch{} });
   selOpc?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_opciones', selOpc.value); }catch{} });
 
-  // ------- Restaurar preferencias (validadas) -------
   try{
     const prefTam = localStorage.getItem('intruso_tamano');
     setSelectValue(selTam, prefTam, ['grande','muy-grande']); aplicarTam();
-
     const sR = localStorage.getItem('intruso_rondas');
     setSelectValue(selRondas, sR, ['6','8','10']);
-
     const sO = localStorage.getItem('intruso_opciones');
     setSelectValue(selOpc, sO, ['3','4','5']);
   }catch{}
 
   actualizar();
 
-  // ------- Modal “Acerca de” -------
-  function openAbout(){
-    if (!aboutModal) return;
-    aboutModal.setAttribute('aria-hidden','false');
-    aboutClose?.focus();
-  }
-  function closeAbout(){
-    if (!aboutModal) return;
-    aboutModal.setAttribute('aria-hidden','true');
-  }
+  // ------- Modal -------
+  function openAbout(){ aboutModal?.setAttribute('aria-hidden','false'); aboutClose?.focus(); }
+  function closeAbout(){ aboutModal?.setAttribute('aria-hidden','true'); }
   aboutBtn?.addEventListener('click', openAbout);
   aboutClose?.addEventListener('click', closeAbout);
   aboutModal?.addEventListener('click', (e)=>{ if(e.target===aboutModal) closeAbout(); });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
 
-  // ------- Tema claro/oscuro (validado) -------
+  // ------- Tema -------
   function applyTheme(mode){
     const m = (mode === 'light' || mode === 'dark') ? mode : 'dark';
     document.documentElement.setAttribute('data-theme', m);
-
     if (themeBtn) {
       const isDark = (m === 'dark');
       themeBtn.textContent = isDark ? '🌞 Cambiar a claro' : '🌙 Cambiar a oscuro';
@@ -323,18 +301,3 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(next);
   });
 });
-
-// Cuando se hace clic en "Comenzar"
-document.getElementById("btnComenzar").addEventListener("click", () => {
-  // Mostrar la sección de acciones (Pista + Siguiente)
-  const acciones = document.getElementById("acciones");
-  acciones.hidden = false;
-
-  // Mostrar solo "Mostrar pista" al inicio
-  document.getElementById("btnPista").hidden = false;
-
-  // (si tenés lógica para armar la primera ronda, mantenela acá también)
-});
-document.getElementById("acciones").hidden = true;
-document.getElementById("btnPista").hidden = true;
-

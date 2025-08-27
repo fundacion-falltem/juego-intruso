@@ -7,14 +7,14 @@
   <meta name="theme-color" content="#0b0b0b"/>
   <meta name="color-scheme" content="dark light"/>
 
-  <!-- Seguridad (funciona en MAMP y en GitHub Pages) -->
+  <!-- Seguridad (MAMP / GitHub Pages) -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';
                  img-src 'self' data:; connect-src 'self'; object-src 'none';
                  base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin"/>
 
-  <!-- Open Graph / Social -->
+  <!-- Open Graph -->
   <meta property="og:title" content="¿Cuál es el intruso? — FALLTEM">
   <meta property="og:description" content="Juego cognitivo accesible: categorización e inhibición, sin datos personales.">
   <meta property="og:type" content="website">
@@ -24,12 +24,12 @@
 
   <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
 
-  <!-- Estilos (sin inline para cumplir CSP) -->
-  <link rel="stylesheet" href="./styles.css?v=sec12">
+  <!-- Estilos -->
+  <link rel="stylesheet" href="./styles.css?v=sec14">
 </head>
 
 <body>
-  <!-- Accesibilidad: aparece con Tab y salta directo al juego -->
+  <!-- Skip link -->
   <a href="#juego" class="skip">Saltar directamente al juego</a>
 
   <!-- Botón de ayuda fijo -->
@@ -96,7 +96,6 @@
           <option value="muy-grande">Muy grande</option>
         </select>
 
-        <!-- Botón de tema -->
         <button id="themeToggle" class="btn secundario" type="button" aria-pressed="false">Cambiar tema</button>
 
         <button id="btnComenzar" class="btn principal" type="button">Comenzar</button>
@@ -104,14 +103,16 @@
       </section>
     </header>
 
-    <!-- Área donde se renderiza la tarjeta de la ronda -->
+    <!-- La tarjeta de cada ronda se inyecta acá por app.js -->
     <section id="juego" class="juego" aria-live="polite"></section>
 
-    <!-- Acciones de la ronda: Pista + Siguiente -->
-    <div id="acciones" class="acciones" hidden>
-      <button id="btnPista" class="btn info" type="button">Mostrar pista</button>
-      <!-- SUGERENCIA: si tu app.js crea el botón Siguiente, insertalo aquí:
-           document.getElementById('acciones').appendChild(btnSiguiente) -->
+    <!-- Plantilla de acciones para clonar DENTRO de la tarjeta -->
+    <div id="accionesPlantilla" hidden>
+      <div class="acciones acciones-en-tarjeta">
+        <!-- OJO: sin id, usamos clases para evitar duplicados -->
+        <button class="btn btn-pista info" type="button" hidden>Mostrar pista</button>
+        <!-- El botón Siguiente se inyecta aquí por app.js -->
+      </div>
     </div>
 
     <!-- Estado/puntaje -->
@@ -119,7 +120,7 @@
       <p>Progreso: <span id="progreso">0/0</span> · Aciertos: <span id="aciertos">0</span></p>
     </section>
 
-    <!-- Footer mini (crédito + aviso) -->
+    <!-- Footer -->
     <footer class="mini-credit" role="contentinfo" aria-label="Créditos y aviso">
       <p>
         <strong class="mini-label">Créditos y aviso:</strong>
@@ -129,14 +130,14 @@
         • Uso libre por otras ONG
         • Actividad lúdica; no es práctica médica
         • Sin recolección de datos personales por defecto
-        • Integraciones adicionales: responsabilidad de cada organización
-      </p>
+        • • Integraciones adicionales: responsabilidad de cada organización
+       <br><small>Versión: <strong>v1.1</strong> — Agosto 2025</small>
+  </p>
     </footer>
   </main>
 
   <noscript><p>Este juego necesita JavaScript para funcionar.</p></noscript>
 
-  <!-- Script -->
-  <script src="./app.js?v=sec12" defer></script>
+  <script src="./app.js?v=sec14" defer></script>
 </body>
 </html>
