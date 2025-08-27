@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "idioma": "es",
+  "categorias": [
+    {
+      "pista": "Frutas",
+      "items": ["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"],
+      "intrusos": ["tomate"]
+    },
+    {
+      "pista": "Verduras",
+      "items": ["zanahoria","tomate","lechuga","cebolla","papa","zapallo","pepino","berenjena","espinaca","brócoli"],
+      "intrusos": ["banana"]
+    },
+    {
+      "pista": "Animales",
+      "items": ["perro","gato","vaca","caballo","oveja","cerdo","cabra","burro","toro","ciervo"],
+      "intrusos": ["rosa"]
+    },
+    {
+      "pista": "Aves",
+      "items": ["paloma","gorrión","águila","loro","gallo","pavo","canario","búho","cisne","flamenco"],
+      "intrusos": ["pez"]
+    },
+    {
+      "pista": "Insectos",
+      "items": ["mariposa","abeja","hormiga","mosca","mosquito","mariquita","grillo","libélula","saltamontes","avispa"],
+      "intrusos": ["camión"]
+    },
+    {
+      "pista": "Muebles",
+      "items": ["mesa","silla","cama","ropero","sofá","estante","escritorio","cómoda","banco","biblioteca"],
+      "intrusos": ["gato"]
+    },
+    {
+      "pista": "Electrodomésticos",
+      "items": ["heladera","lavarropas","microondas","licuadora","tostadora","plancha","aspiradora","lavavajillas","ventilador","horno"],
+      "intrusos": ["sandía"]
+    },
+    {
+      "pista": "Utensilios de cocina",
+      "items": ["cuchara","tenedor","cuchillo","espátula","batidor","cucharón","colador","pelapapas","tabla","rallador"],
+      "intrusos": ["martillo"]
+    },
+    {
+      "pista": "Herramientas",
+      "items": ["martillo","destornillador","llave inglesa","sierra","alicate","tenaza","cinta métrica","taladro","nivel","pala"],
+      "intrusos": ["cuchara"]
+    },
+    {
+      "pista": "Ropa",
+      "items": ["camisa","pantalón","abrigo","gorra","bufanda","medias","falda","suéter","remera","campera"],
+      "intrusos": ["banana"]
+    },
+    {
+      "pista": "Calzado",
+      "items": ["zapato","zapatilla","bota","sandalia","ojota","pantufla","taco","botín","alpargata","zueco"],
+      "intrusos": ["camisa"]
+    },
+    {
+      "pista": "Transportes",
+      "items": ["auto","colectivo","tren","avión","bicicleta","barco","moto","tranvía","subte","camión"],
+      "intrusos": ["uva"]
+    },
+    {
+      "pista": "Partes del cuerpo",
+      "items": ["cabeza","brazo","mano","pierna","pie","ojo","oreja","nariz","boca","espalda"],
+      "intrusos": ["mesa"]
+    },
+    {
+      "pista": "Colores",
+      "items": ["rojo","azul","verde","amarillo","naranja","violeta","rosa","marrón","gris","negro"],
+      "intrusos": ["camisa"]
+    },
+    {
+      "pista": "Formas",
+      "items": ["círculo","cuadrado","triángulo","rectángulo","óvalo","rombo","estrella","pentágono","hexágono","corazón"],
+      "intrusos": ["sandía"]
+    },
+    {
+      "pista": "Profesiones",
+      "items": ["médico","maestra","carpintero","plomero","enfermera","ingeniero","panadero","electricista","jardinero","conductor"],
+      "intrusos": ["avión"]
+    },
+    {
+      "pista": "Lugares de la casa",
+      "items": ["cocina","baño","dormitorio","living","comedor","garaje","patio","balcón","lavadero","pasillo"],
+      "intrusos": ["sandía"]
+    },
+    {
+      "pista": "Materiales",
+      "items": ["madera","metal","plástico","vidrio","papel","cartón","tela","cuero","cerámica","goma"],
+      "intrusos": ["uva"]
+    },
+    {
+      "pista": "Clima",
+      "items": ["lluvia","sol","viento","nieve","granizo","neblina","tormenta","arcoíris","nube","relámpago"],
+      "intrusos": ["heladera"]
+    },
+    {
+      "pista": "Bebidas",
+      "items": ["agua","té","café","leche","jugo","mate","limonada","gaseosa","chocolate caliente","soda"],
+      "intrusos": ["caballo"]
+    },
+    {
+      "pista": "Comidas",
+      "items": ["sopa","ensalada","pasta","arroz","pizza","empanada","milanesa","guiso","asado","puré"],
+      "intrusos": ["lápiz"]
+    },
+    {
+      "pista": "Instrumentos musicales",
+      "items": ["guitarra","piano","violín","batería","flauta","trompeta","saxofón","acordeón","tambor","ukelele"],
+      "intrusos": ["sandía"]
+    },
+    {
+      "pista": "Objetos de escuela",
+      "items": ["cuaderno","lápiz","lapicera","goma","regla","cartuchera","mochila","sacapuntas","tijera","libro"],
+      "intrusos": ["camisa"]
+    },
+    {
+      "pista": "Tecnologías",
+      "items": ["computadora","celular","tablet","impresora","teclado","ratón","monitor","auriculares","cámara","parlante"],
+      "intrusos": ["sandía"]
+    },
+    {
+      "pista": "Juguetes",
+      "items": ["pelota","muñeca","rompecabezas","trompo","autito","bloque","osito","yo-yo","barrilete","balero"],
+      "intrusos": ["cuchara"]
+    },
+    {
+      "pista": "Flores",
+      "items": ["rosa","tulipán","margarita","girasol","lirio","jazmín","orquídea","clavel","lavanda","hortensia"],
+      "intrusos": ["caballo"]
+    }
+  ]
+}

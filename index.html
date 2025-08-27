@@ -25,7 +25,7 @@
   <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="./styles.css?v=sec14">
+  <link rel="stylesheet" href="./styles.css?v=sec15">
 </head>
 
 <body>
@@ -103,15 +103,15 @@
       </section>
     </header>
 
-    <!-- La tarjeta de cada ronda se inyecta acá por app.js -->
+    <!-- Las tarjetas del juego se inyectan acá por app.js -->
     <section id="juego" class="juego" aria-live="polite"></section>
 
-    <!-- Plantilla de acciones para clonar DENTRO de la tarjeta -->
+    <!-- Plantilla oculta para las acciones (Mostrar pista + Siguiente) -->
     <div id="accionesPlantilla" hidden>
       <div class="acciones acciones-en-tarjeta">
-        <!-- OJO: sin id, usamos clases para evitar duplicados -->
+        <!-- Sin id para evitar duplicados; el JS busca por clase -->
         <button class="btn btn-pista info" type="button" hidden>Mostrar pista</button>
-        <!-- El botón Siguiente se inyecta aquí por app.js -->
+        <!-- El botón "Siguiente" se genera e inserta por JS -->
       </div>
     </div>
 
@@ -130,14 +130,16 @@
         • Uso libre por otras ONG
         • Actividad lúdica; no es práctica médica
         • Sin recolección de datos personales por defecto
-        • • Integraciones adicionales: responsabilidad de cada organización
-       <br><small>Versión: <strong>v1.1</strong> — Agosto 2025</small>
-  </p>
+        • Integraciones adicionales: responsabilidad de cada organización
+        <br><small>Versión: <strong>v1.1</strong></small>
+      </p>
     </footer>
   </main>
 
   <noscript><p>Este juego necesita JavaScript para funcionar.</p></noscript>
 
-  <script src="./app.js?v=sec14" defer></script>
+  <!-- Script (subí el parámetro ?v cuando actualices) -->
+<link rel="stylesheet" href="./styles.css?v=1.2">
+<script src="./app.js?v=1.2" defer></script>
 </body>
 </html>

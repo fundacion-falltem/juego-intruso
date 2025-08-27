@@ -1,7 +1,7 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // ------- Catálogo -------
+  // ========= Catálogo interno (fallback) =========
   const CAT = Object.freeze({
     "Frutas": Object.freeze(["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"]),
     "Verduras": Object.freeze(["zanahoria","tomate","lechuga","cebolla","papa","zapallo","pepino","berenjena","espinaca","brócoli"]),
@@ -31,11 +31,60 @@ document.addEventListener('DOMContentLoaded', () => {
     "Flores": Object.freeze(["rosa","tulipán","margarita","girasol","lirio","jazmín","orquídea","clavel","lavanda","hortensia"])
   });
 
-  // ------- Estado -------
+  // ========= Catálogo activo (JSON externo con fallback) =========
+  let CAT_ACTIVO = CAT;
+  let _catalogoListo = false;
+
+  async function cargarCatalogo(url) {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("No se pudo cargar el catálogo");
+    const data = await res.json();
+    validarCatalogo(data);
+    return data;
+  }
+
+  function validarCatalogo(data) {
+    if (!data || !Array.isArray(data.categorias)) {
+      throw new Error("Catálogo inválido: falta 'categorias'");
+    }
+    for (const c of data.categorias) {
+      if (typeof c.pista !== "string") throw new Error("Categoría sin 'pista'");
+      if (!Array.isArray(c.items) || c.items.length < 3) {
+        throw new Error(`'items' inválidos en ${c.pista}`);
+      }
+      if (!Array.isArray(c.intrusos) || c.intrusos.length !== 1) {
+        throw new Error(`'intrusos' inválidos en ${c.pista}`);
+      }
+    }
+  }
+
+  function catalogoAObjetoCAT(data) {
+    const obj = {};
+    for (const c of data.categorias) obj[c.pista] = c.items.slice();
+    return obj;
+  }
+
+  async function initCatalogo() {
+    if (_catalogoListo) return;
+    const params = new URLSearchParams(location.search);
+    const url = params.get("cat") || "./data/cat-es.json";
+    try {
+      const data = await cargarCatalogo(url);
+      CAT_ACTIVO = catalogoAObjetoCAT(data);
+      console.log("Catálogo externo activo:", url);
+    } catch (e) {
+      console.warn("Catálogo externo no disponible, uso fallback interno:", e.message);
+      CAT_ACTIVO = CAT;
+    } finally {
+      _catalogoListo = true;
+    }
+  }
+
+  // ========= Estado =========
   let rondasTotales = 8, ronda = 0, aciertos = 0, nOpc = 4, bar;
   let categoriaActual = null, ultimaCategoria = null;
 
-  // ------- Refs -------
+  // ========= Refs =========
   const juegoEl     = document.getElementById('juego');
   const progresoEl  = document.getElementById('progreso');
   const aciertosEl  = document.getElementById('aciertos');
@@ -51,16 +100,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const aboutModal  = document.getElementById('aboutModal');
   const aboutClose  = document.getElementById('aboutClose');
 
-  // ------- Utilidades -------
+  // ========= Utilidades =========
   const barajar = (arr)=>{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; };
-  const elegirCategoria = (excluir = [])=>{
-    const excl = Array.isArray(excluir) ? excluir : [excluir];
-    const keys = Object.keys(CAT).filter(k=> !excl.includes(k));
-    return keys[Math.floor(Math.random()*keys.length)];
-  };
   const sample = (arr,k)=>{ const c=[...arr]; barajar(c); return c.slice(0, Math.min(k, c.length)); };
 
   const setSelectValue = (el, val, allowed) => { if (allowed.includes(String(val))) { el.value = String(val); } };
+
+  const elegirCategoria = (excluir = [])=>{
+    const excl = Array.isArray(excluir) ? excluir : [excluir];
+    const keys = Object.keys(CAT_ACTIVO).filter(k=> !excl.includes(k));
+    return keys[Math.floor(Math.random()*keys.length)];
+  };
 
   function actualizar(){
     progresoEl.textContent = `${Math.min(ronda, rondasTotales)}/${rondasTotales}`;
@@ -72,8 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     categoriaActual = elegirCategoria(ultimaCategoria ? [ultimaCategoria] : []);
     const otra = elegirCategoria([categoriaActual]);
 
-    const correctas = sample(CAT[categoriaActual], Math.max(2, nOpc-1));
-    const intruso = sample(CAT[otra], 1)[0];
+    const correctas = sample(CAT_ACTIVO[categoriaActual], Math.max(2, nOpc-1));
+    const intruso = sample(CAT_ACTIVO[otra], 1)[0];
 
     let opciones = barajar([
       ...correctas.map(x=>({txt:x, ok:false})),
@@ -89,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return opciones;
   }
 
-  // ------- Render seguro -------
+  // ========= Render seguro =========
   function el(tag, cls, text){
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -97,30 +147,29 @@ document.addEventListener('DOMContentLoaded', () => {
     return n;
   }
 
-  function montarAcciones(tarjeta, fb){
-    // Clonar la plantilla de acciones
+  // Construye bloque de acciones (NO lo inserta). Lo devolvemos para colocarlo al final.
+  function crearAcciones(fb){
     const tpl = document.querySelector('#accionesPlantilla .acciones');
     const acciones = tpl.cloneNode(true);
 
-    // Botón Pista
-    const btnPista = acciones.querySelector('.btn-pista');
-    if (btnPista) {
-      btnPista.hidden = false;
-      btnPista.addEventListener('click', ()=>{
+    // Pista
+    const btnPistaLocal = acciones.querySelector('.btn-pista');
+    if (btnPistaLocal) {
+      btnPistaLocal.hidden = false;
+      btnPistaLocal.addEventListener('click', ()=>{
         fb.className = 'feedback';
         fb.textContent = `Pista: categoría del grupo = “${categoriaActual}”.`;
         fb.focus();
       });
     }
 
-    // Botón Siguiente
+    // Siguiente
     const next = el('button', 'btn principal', 'Siguiente');
     next.disabled = true;
     next.setAttribute('aria-disabled','true');
     acciones.appendChild(next);
 
-    tarjeta.appendChild(acciones);
-    return next;
+    return { acciones, next };
   }
 
   function renderPregunta(){
@@ -128,19 +177,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const opciones = construirRonda();
 
+    // limpiar contenedor
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
 
     const tarjeta = el('div', 'tarjeta');
     tarjeta.setAttribute('role','group');
     tarjeta.setAttribute('aria-labelledby','enunciado');
 
+    // barra progreso
     const pb = el('div', 'progresoBar'); pb.setAttribute('aria-hidden','true');
     const fill = el('div'); pb.appendChild(fill); bar = fill; actualizar();
 
+    // enunciado
     const enunciado = el('p', 'pregunta'); enunciado.id = 'enunciado';
     enunciado.textContent = '🧠 ¿Qué palabra no pertenece al grupo?';
 
+    // opciones
     const cont = el('div', 'opciones');
+
+    // feedback accesible
+    const fb = el('p', 'feedback');
+    fb.setAttribute('role','status');
+    fb.setAttribute('aria-live','polite');
+    fb.setAttribute('aria-atomic','true');
+    fb.tabIndex = -1;
+
+    // ==== construir acciones pero NO insertarlas aún ====
+    const { acciones, next } = crearAcciones(fb);
+
+    // armar botones de opciones
     opciones.forEach((op, i)=>{
       const b = el('button', op.ok ? 'correcta' : 'incorrecta');
       b.setAttribute('aria-label', `Opción ${i+1}: ${op.txt}`);
@@ -150,23 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
       cont.appendChild(b);
     });
 
-    const fb = el('p', 'feedback');
-    fb.setAttribute('role','status');
-    fb.setAttribute('aria-live','polite');
-    fb.setAttribute('aria-atomic','true');
-    fb.tabIndex = -1;
-
+    // orden correcto en la tarjeta
     tarjeta.appendChild(pb);
     tarjeta.appendChild(enunciado);
     tarjeta.appendChild(cont);
     tarjeta.appendChild(fb);
-
-    // Montar acciones dentro de la tarjeta
-    const next = montarAcciones(tarjeta, fb);
+    tarjeta.appendChild(acciones); // ← ahora sí, al final
 
     juegoEl.appendChild(tarjeta);
 
-    // Atajos teclado
+    // Atajos 1..5
     const onKey = (e)=>{
       const n = Number.parseInt(e.key, 10);
       if(Number.isInteger(n) && n>=1 && n<=5){ cont.children[n-1]?.click(); }
@@ -190,9 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
     fb.focus();
     next.disabled = false;
     next.setAttribute('aria-disabled','false');
-    next.replaceWith(next.cloneNode(true));
-    const nuevoNext = juegoEl.querySelector('.btn.principal');
-    nuevoNext.addEventListener('click', ()=>{ ronda++; actualizar(); renderPregunta(); }, {once:true});
+
+    // Reemplazar handler previo y avanzar una sola vez
+    const acciones = next.parentElement;
+    const nextClon = next.cloneNode(true);
+    acciones.replaceChild(nextClon, next);
+    nextClon.addEventListener('click', ()=>{ ronda++; actualizar(); renderPregunta(); }, {once:true});
   }
 
   function renderFin(){
@@ -200,8 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tarjeta = el('div', 'tarjeta');
     tarjeta.appendChild(el('p','pregunta','🎉 ¡Buen trabajo!'));
-    const p2 = el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`);
-    tarjeta.appendChild(p2);
+    tarjeta.appendChild(el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`));
     tarjeta.appendChild(el('p',null,'Puedes volver a jugar cambiando el tamaño de texto u opciones por pregunta.'));
     juegoEl.appendChild(tarjeta);
 
@@ -209,20 +269,24 @@ document.addEventListener('DOMContentLoaded', () => {
     btnComenzar.hidden = true;
   }
 
-  // ------- Preferencias -------
+  // ========= Preferencias / tamaño =========
   function aplicarTam(){
     const muy = selTam.value === 'muy-grande';
     document.documentElement.classList.toggle('muy-grande', muy);
     try{ localStorage.setItem('intruso_tamano', muy ? 'muy-grande' : 'grande'); }catch{}
   }
 
-  function comenzar(){
+  async function comenzar(){
+    await initCatalogo(); // asegurar catálogo
+
     rondasTotales = Number(selRondas.value);
     nOpc = Number(selOpc.value);
+
     try{
       localStorage.setItem('intruso_rondas', selRondas.value);
       localStorage.setItem('intruso_opciones', selOpc.value);
     }catch{}
+
     ronda = 0; aciertos = 0; ultimaCategoria = null;
     btnReiniciar.hidden = true;
     btnComenzar.hidden = true;
@@ -230,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPregunta();
   }
 
-  // ------- Eventos -------
+  // ========= Eventos =========
   btnComenzar?.addEventListener('click', comenzar);
   btnReiniciar?.addEventListener('click', ()=>{
     btnComenzar.hidden = false;
@@ -242,18 +306,21 @@ document.addEventListener('DOMContentLoaded', () => {
   selRondas?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_rondas', selRondas.value); }catch{} });
   selOpc?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_opciones', selOpc.value); }catch{} });
 
+  // Restaurar preferencias
   try{
     const prefTam = localStorage.getItem('intruso_tamano');
     setSelectValue(selTam, prefTam, ['grande','muy-grande']); aplicarTam();
+
     const sR = localStorage.getItem('intruso_rondas');
     setSelectValue(selRondas, sR, ['6','8','10']);
+
     const sO = localStorage.getItem('intruso_opciones');
     setSelectValue(selOpc, sO, ['3','4','5']);
   }catch{}
 
   actualizar();
 
-  // ------- Modal -------
+  // ========= Modal “Acerca de” =========
   function openAbout(){ aboutModal?.setAttribute('aria-hidden','false'); aboutClose?.focus(); }
   function closeAbout(){ aboutModal?.setAttribute('aria-hidden','true'); }
   aboutBtn?.addEventListener('click', openAbout);
@@ -261,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
   aboutModal?.addEventListener('click', (e)=>{ if(e.target===aboutModal) closeAbout(); });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
 
-  // ------- Tema -------
+  // ========= Tema claro/oscuro =========
   function applyTheme(mode){
     const m = (mode === 'light' || mode === 'dark') ? mode : 'dark';
     document.documentElement.setAttribute('data-theme', m);
