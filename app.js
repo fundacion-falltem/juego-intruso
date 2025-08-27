@@ -1,6 +1,11 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // —— Versión centralizada ——
+  const VERSION = "v1.2";
+  const versionEl = document.getElementById('versionLabel');
+  if (versionEl) versionEl.textContent = VERSION;
+
   // ========= Catálogo interno (fallback) =========
   const CAT = Object.freeze({
     "Frutas": Object.freeze(["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"]),
@@ -369,9 +374,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  // —— Versión centralizada ——
-  const VERSION = "v1.2";
-  const versionEl = document.getElementById('versionLabel');
-  if (versionEl) versionEl.textContent = VERSION;
-  });
