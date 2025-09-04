@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // —— Versión centralizada ——
-  const VERSION = "v1.2";
+  const VERSION = "v1.3 (FALLTEM light + a11y + cleanup)";
   const versionEl = document.getElementById('versionLabel');
   if (versionEl) versionEl.textContent = VERSION;
 
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========= Refs =========
   const juegoEl     = document.getElementById('juego');
   const progresoEl  = document.getElementById('progreso');
-  const aciertosEl  = document.getElementById('aciertos');
+  const aciertosHUD = document.getElementById('aciertos');
   const btnComenzar = document.getElementById('btnComenzar');
   const btnReiniciar= document.getElementById('btnReiniciar');
   const selRondas   = document.getElementById('rondas');
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function actualizar(){
     progresoEl.textContent = `${Math.min(ronda, rondasTotales)}/${rondasTotales}`;
-    aciertosEl.textContent = String(aciertos);
+    aciertosHUD.textContent = String(aciertos);
     if (bar) { bar.style.width = Math.round((Math.min(ronda, rondasTotales)/rondasTotales)*100) + "%"; }
   }
 
@@ -152,13 +152,24 @@ document.addEventListener('DOMContentLoaded', () => {
     return n;
   }
 
-  // Construye bloque de acciones (NO lo inserta). Lo devolvemos para colocarlo al final.
+  function resetOpciones(container){
+    // Limpia cualquier rastro visual por si el DOM se reusa (anti “preselección”)
+    container.querySelectorAll('button').forEach(b=>{
+      b.disabled = false;
+      b.classList.remove('marcada','ok','bad','correcta','incorrecta');
+      // no removemos el rol de correcta/incorrecta aquí; se asigna al crear cada ronda
+      b.removeAttribute('aria-disabled');
+    });
+    container.removeAttribute('aria-busy');
+  }
+
+  // Construye bloque de acciones (NO lo inserta).
   function crearAcciones(fb){
     const tpl = document.querySelector('#accionesPlantilla .acciones');
-    const acciones = tpl.cloneNode(true);
+    const acciones = tpl ? tpl.cloneNode(true) : el('div','acciones');
 
-    // Pista
-    const btnPistaLocal = acciones.querySelector('.btn-pista');
+    // Pista (si existe en la plantilla)
+    const btnPistaLocal = acciones.querySelector?.('.btn-pista');
     if (btnPistaLocal) {
       btnPistaLocal.hidden = false;
       btnPistaLocal.addEventListener('click', ()=>{
@@ -182,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const opciones = construirRonda();
 
-    // limpiar contenedor
+    // limpiar contenedor principal
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
 
     const tarjeta = el('div', 'tarjeta');
@@ -207,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fb.setAttribute('aria-atomic','true');
     fb.tabIndex = -1;
 
-    // ==== construir acciones pero NO insertarlas aún ====
+    // acciones (se insertan al final)
     const { acciones, next } = crearAcciones(fb);
 
     // armar botones de opciones
@@ -216,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
       b.setAttribute('aria-label', `Opción ${i+1}: ${op.txt}`);
       b.appendChild(el('strong', null, `${i+1}.`));
       b.appendChild(document.createTextNode(' ' + op.txt));
-      b.addEventListener('click', ()=> elegir(b, op, fb, next));
+      b.addEventListener('click', ()=> elegir(b, op, cont, fb, next));
       cont.appendChild(b);
     });
 
@@ -225,11 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
     tarjeta.appendChild(enunciado);
     tarjeta.appendChild(cont);
     tarjeta.appendChild(fb);
-    tarjeta.appendChild(acciones); // ← ahora sí, al final
+    tarjeta.appendChild(acciones);
 
     juegoEl.appendChild(tarjeta);
 
-    // Atajos 1..5
+    // Reset preventivo de estados + foco a primera opción
+    resetOpciones(cont);
+    requestAnimationFrame(()=>{
+      cont.querySelector('button')?.focus({ preventScroll:true });
+      tarjeta.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+
+    // Atajos 1..5 (una sola vez por render)
     const onKey = (e)=>{
       const n = Number.parseInt(e.key, 10);
       if(Number.isInteger(n) && n>=1 && n<=5){ cont.children[n-1]?.click(); }
@@ -237,17 +255,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', onKey, {once:true});
   }
 
-  function elegir(btn, op, fb, next){
-    document.querySelectorAll('.opciones button').forEach(b=> b.disabled = true);
+  function elegir(btn, op, cont, fb, next){
+    // bloquear interacción mientras se evalúa
+    cont.setAttribute('aria-busy','true');
+
+    cont.querySelectorAll('button').forEach(b=> b.disabled = true);
     btn.classList.add('marcada');
 
     if(op.ok){
       aciertos++;
       fb.className = 'feedback ok';
-      fb.textContent = `✔ Correcto. El intruso es “${op.txt}”. La categoría es “${categoriaActual}”.`;
+      fb.textContent = `✔ Correcto. El intruso es “${op.txt}”. La categoría del grupo era “${categoriaActual}”.`;
     } else {
       fb.className = 'feedback bad';
-      fb.textContent = `✘ Casi. La categoría del grupo es “${categoriaActual}”.`;
+      fb.textContent = `✘ Casi. La categoría del grupo era “${categoriaActual}”.`;
     }
 
     fb.focus();
@@ -258,7 +279,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const acciones = next.parentElement;
     const nextClon = next.cloneNode(true);
     acciones.replaceChild(nextClon, next);
-    nextClon.addEventListener('click', ()=>{ ronda++; actualizar(); renderPregunta(); }, {once:true});
+    nextClon.addEventListener('click', ()=>{
+      ronda++; actualizar();
+      renderPregunta();
+    }, {once:true});
+
+    // liberar aria-busy con pequeño retraso para que el lector anuncie el feedback
+    setTimeout(()=> cont.removeAttribute('aria-busy'), 120);
   }
 
   function renderFin(){
@@ -267,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tarjeta = el('div', 'tarjeta');
     tarjeta.appendChild(el('p','pregunta','🎉 ¡Buen trabajo!'));
     tarjeta.appendChild(el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`));
-    tarjeta.appendChild(el('p',null,'Puedes volver a jugar cambiando el tamaño de texto u opciones por pregunta.'));
+    tarjeta.appendChild(el('p',null,'Podés volver a jugar cambiando el tamaño de texto u opciones por pregunta.'));
     juegoEl.appendChild(tarjeta);
 
     btnReiniciar.hidden = false;
@@ -309,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
   selTam?.addEventListener('change', aplicarTam);
 
   selRondas?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_rondas', selRondas.value); }catch{} });
-  selOpc?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_opciones', selOpc.value); }catch{} });
+  selOpc?.addEventListener('change',   ()=>{ try{ localStorage.setItem('intruso_opciones', selOpc.value); }catch{} });
 
   // Restaurar preferencias
   try{
@@ -333,44 +360,32 @@ document.addEventListener('DOMContentLoaded', () => {
   aboutModal?.addEventListener('click', (e)=>{ if(e.target===aboutModal) closeAbout(); });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
 
-  // ========= Tema claro/oscuro =========
+  // ========= Tema claro/oscuro (LIGHT por defecto) =========
+  function labelFor(mode){ return mode === 'dark' ? 'Usar modo claro' : 'Usar modo oscuro'; }
   function applyTheme(mode){
-    const m = (mode === 'light' || mode === 'dark') ? mode : 'dark';
+    const m = (mode === 'light' || mode === 'dark') ? mode : 'light'; // default light
     document.documentElement.setAttribute('data-theme', m);
     if (themeBtn) {
-      const isDark = (m === 'dark');
-      themeBtn.textContent = isDark ? '🌞 Cambiar a claro' : '🌙 Cambiar a oscuro';
-      themeBtn.setAttribute('aria-pressed', String(isDark));
+      themeBtn.textContent = labelFor(m);
+      themeBtn.setAttribute('aria-pressed', String(m === 'dark'));
     }
     const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', m === 'dark' ? '#0b0b0b' : '#ffffff');
+    if (metaTheme) metaTheme.setAttribute('content', m === 'dark' ? '#0b0b0b' : '#f8fbf4');
   }
 
   (function initTheme(){
-    let mode = 'dark';
+    let mode = 'light';
     try{
       const stored = localStorage.getItem('theme');
-      if (stored === 'light' || stored === 'dark') {
-        mode = stored;
-      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        mode = 'light';
-      }
+      if (stored === 'light' || stored === 'dark') mode = stored;
     }catch{}
     applyTheme(mode);
   })();
 
-  try {
-    if (!localStorage.getItem('theme') && window.matchMedia) {
-      const mq = window.matchMedia('(prefers-color-scheme: light)');
-      mq.addEventListener?.('change', (e) => applyTheme(e.matches ? 'light' : 'dark'));
-    }
-  } catch {}
-
   themeBtn?.addEventListener('click', ()=>{
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     try { localStorage.setItem('theme', next); } catch {}
     applyTheme(next);
   });
 });
-
