@@ -1,7 +1,7 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', function () {
-  const VERSION = "Intruso v2.2.3 (CTA final a otros juegos)";
+  const VERSION = "Intruso v2.3.0 (cierre adaptativo + CTA)";
   const versionEl = document.getElementById('versionLabel');
   if (versionEl) versionEl.textContent = VERSION;
 
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const aciertosHUD  = document.getElementById('aciertos');
   const btnComenzar  = document.getElementById('btnComenzar');
   const btnReiniciar = document.getElementById('btnReiniciar');
-  const btnOtroJuego = document.getElementById('btnOtroJuego'); // no se usa arriba
+  const btnOtroJuego = document.getElementById('btnOtroJuego');
   const selRondas    = document.getElementById('rondas');
   const selOpc       = document.getElementById('opciones');
 
@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (bar) bar.style.width = Math.round((Math.min(ronda, rondasTotales)/rondasTotales)*100) + "%";
   }
   function setTopActions(mode){
-    // nunca mostramos el CTA superior “Elegir otro juego”
     if (mode==='idle'){ btnComenzar.hidden=false; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
     if (mode==='playing'){ btnComenzar.hidden=true; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
     if (mode==='finished'){ btnComenzar.hidden=false; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
@@ -213,28 +212,55 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(()=> cont.removeAttribute('aria-busy'), 120);
   }
 
+  // === NUEVO: mensajes adaptativos de cierre ===
+  function resumenFinal() {
+    const pct = Math.round((aciertos / Math.max(1, rondasTotales)) * 100);
+    if (pct <= 25) {
+      return {
+        titulo: "💪 Buen intento",
+        consejo: "Cada ronda suma. Probá con menos rondas u opciones, y usá la pista cuando lo necesites."
+      };
+    }
+    if (pct <= 50) {
+      return {
+        titulo: "👏 ¡Vas bien!",
+        consejo: "Observá con calma el grupo y pensá la categoría. La pista te puede orientar."
+      };
+    }
+    if (pct <= 75) {
+      return {
+        titulo: "🌟 ¡Muy bien!",
+        consejo: "Si querés más desafío, subí una opción o agregá rondas."
+      };
+    }
+    return {
+      titulo: "🏆 ¡Excelente!",
+      consejo: "Gran desempeño. Probá con 5 opciones o más rondas para mantener el desafío."
+    };
+  }
+
   function renderFin(){
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
+
+    const { titulo, consejo } = resumenFinal();
+    const pct = Math.round((aciertos / Math.max(1, rondasTotales)) * 100);
+
     const card = el('div','tarjeta');
-    card.appendChild(el('p','pregunta','🎉 ¡Buen trabajo!'));
-    card.appendChild(el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`));
-    card.appendChild(el('p',null,'Podés volver a jugar cambiando las opciones del juego.'));
+    card.appendChild(el('p','pregunta', titulo));
+    card.appendChild(el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales} (${pct}%).`));
+    card.appendChild(el('p',null, consejo));
 
     const acc = el('div','acciones');
 
-    // Volver a jugar
     const again = el('button','btn principal','Volver a jugar');
     again.addEventListener('click', comenzar);
     acc.appendChild(again);
 
-    // NUEVO: CTA “Elegir otro juego” dentro de la tarjeta final
     const linkOtro = document.createElement('a');
     linkOtro.href = 'https://falltem.org/juegos/#games-cards';
     linkOtro.className = 'btn secundario';
     linkOtro.textContent = 'Elegir otro juego';
     linkOtro.setAttribute('role','button');
-    linkOtro.setAttribute('aria-label','Elegir otro juego en el sitio de FALLTEM');
-    // para que coincida el ancho de .acciones button
     linkOtro.style.display = 'inline-block';
     linkOtro.style.width = '72%';
     linkOtro.style.maxWidth = '320px';
