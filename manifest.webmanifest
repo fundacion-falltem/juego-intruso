@@ -1,0 +1,29 @@
+{
+  "name": "¿Cuál es el intruso? — FALLTEM",
+  "short_name": "Intruso",
+  "description": "Juego cognitivo accesible: identificar el elemento que no pertenece (categorización e inhibición).",
+  "lang": "es-AR",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e0e0e",
+  "theme_color": "#0e0e0e",
+  "icons": [
+    { "src": "./images/intruso-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./images/intruso-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["education", "health", "games"],
+  "shortcuts": [
+    {
+      "name": "8 rondas · 4 opciones",
+      "short_name": "Rápido",
+      "url": "./?rondas=8&opciones=4"
+    },
+    {
+      "name": "10 rondas · 5 opciones",
+      "short_name": "Reto",
+      "url": "./?rondas=10&opciones=5"
+    }
+  ]
+}

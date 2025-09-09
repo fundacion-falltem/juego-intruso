@@ -1,391 +1,327 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
-  // —— Versión centralizada ——
-  const VERSION = "v1.3 (FALLTEM light + a11y + cleanup)";
+document.addEventListener('DOMContentLoaded', function () {
+  const VERSION = "Intruso v2.2.2 (sin CTA externo + startup robusto)";
   const versionEl = document.getElementById('versionLabel');
   if (versionEl) versionEl.textContent = VERSION;
 
-  // ========= Catálogo interno (fallback) =========
+  /* ===== Catálogo fallback ===== */
   const CAT = Object.freeze({
-    "Frutas": Object.freeze(["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"]),
-    "Verduras": Object.freeze(["zanahoria","tomate","lechuga","cebolla","papa","zapallo","pepino","berenjena","espinaca","brócoli"]),
-    "Animales": Object.freeze(["perro","gato","vaca","caballo","oveja","cerdo","cabra","burro","toro","ciervo"]),
-    "Aves": Object.freeze(["paloma","gorrión","águila","loro","gallo","pavo","canario","búho","cisne","flamenco"]),
-    "Insectos": Object.freeze(["mariposa","abeja","hormiga","mosca","mosquito","mariquita","grillo","libélula","saltamontes","avispa"]),
-    "Muebles": Object.freeze(["mesa","silla","cama","ropero","sofá","estante","escritorio","cómoda","banco","biblioteca"]),
-    "Electrodomésticos": Object.freeze(["heladera","lavarropas","microondas","licuadora","tostadora","plancha","aspiradora","lavavajillas","ventilador","horno"]),
-    "Utensilios de cocina": Object.freeze(["cuchara","tenedor","cuchillo","espátula","batidor","cucharón","colador","pelapapas","tabla","rallador"]),
-    "Herramientas": Object.freeze(["martillo","destornillador","llave inglesa","sierra","alicate","tenaza","cinta métrica","taladro","nivel","pala"]),
-    "Ropa": Object.freeze(["camisa","pantalón","abrigo","gorra","bufanda","medias","falda","suéter","remera","campera"]),
-    "Calzado": Object.freeze(["zapato","zapatilla","bota","sandalia","ojota","pantufla","taco","botín","alpargata","zueco"]),
-    "Transportes": Object.freeze(["auto","colectivo","tren","avión","bicicleta","barco","moto","tranvía","subte","camión"]),
-    "Partes del cuerpo": Object.freeze(["cabeza","brazo","mano","pierna","pie","ojo","oreja","nariz","boca","espalda"]),
-    "Colores": Object.freeze(["rojo","azul","verde","amarillo","naranja","violeta","rosa","marrón","gris","negro"]),
-    "Formas": Object.freeze(["círculo","cuadrado","triángulo","rectángulo","óvalo","rombo","estrella","pentágono","hexágono","corazón"]),
-    "Profesiones": Object.freeze(["médico","maestra","carpintero","plomero","enfermera","ingeniero","panadero","electricista","jardinero","conductor"]),
-    "Lugares de la casa": Object.freeze(["cocina","baño","dormitorio","living","comedor","garaje","patio","balcón","lavadero","pasillo"]),
-    "Materiales": Object.freeze(["madera","metal","plástico","vidrio","papel","cartón","tela","cuero","cerámica","goma"]),
-    "Clima": Object.freeze(["lluvia","sol","viento","nieve","granizo","neblina","tormenta","arcoíris","nube","relámpago"]),
-    "Bebidas": Object.freeze(["agua","té","café","leche","jugo","mate","limonada","gaseosa","chocolate caliente","soda"]),
-    "Comidas": Object.freeze(["sopa","ensalada","pasta","arroz","pizza","empanada","milanesa","guiso","asado","puré"]),
-    "Instrumentos musicales": Object.freeze(["guitarra","piano","violín","batería","flauta","trompeta","saxofón","acordeón","tambor","ukelele"]),
-    "Objetos de escuela": Object.freeze(["cuaderno","lápiz","lapicera","goma","regla","cartuchera","mochila","sacapuntas","tijera","libro"]),
-    "Tecnologías": Object.freeze(["computadora","celular","tablet","impresora","teclado","ratón","monitor","auriculares","cámara","parlante"]),
-    "Juguetes": Object.freeze(["pelota","muñeca","rompecabezas","trompo","autito","bloque","osito","yo-yo","barrilete","balero"]),
-    "Flores": Object.freeze(["rosa","tulipán","margarita","girasol","lirio","jazmín","orquídea","clavel","lavanda","hortensia"])
+    "Frutas":["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"],
+    "Verduras":["zanahoria","tomate","lechuga","cebolla","papa","zapallo","pepino","berenjena","espinaca","brócoli"],
+    "Animales":["perro","gato","vaca","caballo","oveja","cerdo","cabra","burro","toro","ciervo"],
+    "Aves":["paloma","gorrión","águila","loro","gallo","pavo","canario","búho","cisne","flamenco"],
+    "Insectos":["mariposa","abeja","hormiga","mosca","mosquito","mariquita","grillo","libélula","saltamontes","avispa"],
+    "Muebles":["mesa","silla","cama","ropero","sofá","estante","escritorio","cómoda","banco","biblioteca"],
+    "Electrodomésticos":["heladera","lavarropas","microondas","licuadora","tostadora","plancha","aspiradora","lavavajillas","ventilador","horno"],
+    "Utensilios de cocina":["cuchara","tenedor","cuchillo","espátula","batidor","cucharón","colador","pelapapas","tabla","rallador"],
+    "Herramientas":["martillo","destornillador","llave inglesa","sierra","alicate","tenaza","cinta métrica","taladro","nivel","pala"],
+    "Ropa":["camisa","pantalón","abrigo","gorra","bufanda","medias","falda","suéter","remera","campera"],
+    "Calzado":["zapato","zapatilla","bota","sandalia","ojota","pantufla","taco","botín","alpargata","zueco"],
+    "Transportes":["auto","colectivo","tren","avión","bicicleta","barco","moto","tranvía","subte","camión"],
+    "Partes del cuerpo":["cabeza","brazo","mano","pierna","pie","ojo","oreja","nariz","boca","espalda"],
+    "Colores":["rojo","azul","verde","amarillo","naranja","violeta","rosa","marrón","gris","negro"],
+    "Formas":["círculo","cuadrado","triángulo","rectángulo","óvalo","rombo","estrella","pentágono","hexágono","corazón"],
+    "Profesiones":["médico","maestra","carpintero","plomero","enfermera","ingeniero","panadero","electricista","jardinero","conductor"],
+    "Lugares de la casa":["cocina","baño","dormitorio","living","comedor","garaje","patio","balcón","lavadero","pasillo"],
+    "Materiales":["madera","metal","plástico","vidrio","papel","cartón","tela","cuero","cerámica","goma"],
+    "Clima":["lluvia","sol","viento","nieve","granizo","neblina","tormenta","arcoíris","nube","relámpago"],
+    "Bebidas":["agua","té","café","leche","jugo","mate","limonada","gaseosa","chocolate caliente","soda"],
+    "Comidas":["sopa","ensalada","pasta","arroz","pizza","empanada","milanesa","guiso","asado","puré"],
+    "Instrumentos musicales":["guitarra","piano","violín","batería","flauta","trompeta","saxofón","acordeón","tambor","ukelele"],
+    "Objetos de escuela":["cuaderno","lápiz","lapicera","goma","regla","cartuchera","mochila","sacapuntas","tijera","libro"],
+    "Tecnologías":["computadora","celular","tablet","impresora","teclado","ratón","monitor","auriculares","cámara","parlante"],
+    "Juguetes":["pelota","muñeca","rompecabezas","trompo","autito","bloque","osito","yo-yo","barrilete","balero"],
+    "Flores":["rosa","tulipán","margarita","girasol","lirio","jazmín","orquídea","clavel","lavanda","hortensia"]
   });
 
-  // ========= Catálogo activo (JSON externo con fallback) =========
+  /* ===== Catálogo externo con timeout seguro ===== */
   let CAT_ACTIVO = CAT;
   let _catalogoListo = false;
 
-  async function cargarCatalogo(url) {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error("No se pudo cargar el catálogo");
-    const data = await res.json();
-    validarCatalogo(data);
-    return data;
+  function cargarCatalogo(url){
+    return fetch(url, {cache:'no-store'})
+      .then(r => { if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .catch(() => ({categorias:[]}));
   }
-
-  function validarCatalogo(data) {
-    if (!data || !Array.isArray(data.categorias)) {
-      throw new Error("Catálogo inválido: falta 'categorias'");
-    }
-    for (const c of data.categorias) {
-      if (typeof c.pista !== "string") throw new Error("Categoría sin 'pista'");
-      if (!Array.isArray(c.items) || c.items.length < 3) {
-        throw new Error(`'items' inválidos en ${c.pista}`);
-      }
-      if (!Array.isArray(c.intrusos) || c.intrusos.length !== 1) {
-        throw new Error(`'intrusos' inválidos en ${c.pista}`);
-      }
-    }
+  function catalogoAObjetoCAT(data){
+    const o = {};
+    (data.categorias||[]).forEach(c => { o[c.pista] = c.items.slice(); });
+    return o;
   }
-
-  function catalogoAObjetoCAT(data) {
-    const obj = {};
-    for (const c of data.categorias) obj[c.pista] = c.items.slice();
-    return obj;
-  }
-
-  async function initCatalogo() {
-    if (_catalogoListo) return;
+  function initCatalogo(){
+    if (_catalogoListo) return Promise.resolve();
     const params = new URLSearchParams(location.search);
-    const url = params.get("cat") || "./data/cat-es.json";
-    try {
-      const data = await cargarCatalogo(url);
-      CAT_ACTIVO = catalogoAObjetoCAT(data);
-      console.log("Catálogo externo activo:", url);
-    } catch (e) {
-      console.warn("Catálogo externo no disponible, uso fallback interno:", e.message);
-      CAT_ACTIVO = CAT;
-    } finally {
-      _catalogoListo = true;
-    }
+    const url = params.get('cat') || './data/cat-es.json';
+    const timeout = new Promise(res => setTimeout(res, 600, {categorias:[]}));
+    return Promise.race([cargarCatalogo(url), timeout])
+      .then(data => { CAT_ACTIVO = (data.categorias && data.categorias.length) ? catalogoAObjetoCAT(data) : CAT; })
+      .finally(() => { _catalogoListo = true; });
   }
 
-  // ========= Estado =========
+  /* ===== Estado y refs ===== */
   let rondasTotales = 8, ronda = 0, aciertos = 0, nOpc = 4, bar;
   let categoriaActual = null, ultimaCategoria = null;
 
-  // ========= Refs =========
-  const juegoEl     = document.getElementById('juego');
-  const progresoEl  = document.getElementById('progreso');
-  const aciertosHUD = document.getElementById('aciertos');
-  const btnComenzar = document.getElementById('btnComenzar');
-  const btnReiniciar= document.getElementById('btnReiniciar');
-  const selRondas   = document.getElementById('rondas');
-  const selOpc      = document.getElementById('opciones');
-  const selTam      = document.getElementById('tamano');
+  const juegoEl      = document.getElementById('juego');
+  const progresoEl   = document.getElementById('progreso');
+  const aciertosHUD  = document.getElementById('aciertos');
+  const btnComenzar  = document.getElementById('btnComenzar');
+  const btnReiniciar = document.getElementById('btnReiniciar');
+  const btnOtroJuego = document.getElementById('btnOtroJuego'); // lo vamos a ocultar
+  const selRondas    = document.getElementById('rondas');
+  const selOpc       = document.getElementById('opciones');
 
-  // Tema / modal
-  const themeBtn    = document.getElementById('themeToggle');
-  const aboutBtn    = document.getElementById('aboutBtn');
-  const aboutModal  = document.getElementById('aboutModal');
-  const aboutClose  = document.getElementById('aboutClose');
+  const themeBtn   = document.getElementById('themeToggle');
+  const aboutBtn   = document.getElementById('aboutBtn');
+  const aboutModal = document.getElementById('aboutModal');
+  const aboutClose = document.getElementById('aboutClose');
 
-  // ========= Utilidades =========
-  const barajar = (arr)=>{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; };
-  const sample = (arr,k)=>{ const c=[...arr]; barajar(c); return c.slice(0, Math.min(k, c.length)); };
+  const srUpdates = document.getElementById('sr-updates');
+  const announce = t => { if (srUpdates) srUpdates.textContent = t; };
 
-  const setSelectValue = (el, val, allowed) => { if (allowed.includes(String(val))) { el.value = String(val); } };
-
-  const elegirCategoria = (excluir = [])=>{
-    const excl = Array.isArray(excluir) ? excluir : [excluir];
-    const keys = Object.keys(CAT_ACTIVO).filter(k=> !excl.includes(k));
+  /* ===== Utils ===== */
+  const barajar = a => { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const sample  = (a,k)=> a.slice(0).sort(()=>Math.random()-0.5).slice(0, Math.min(k,a.length));
+  const elegirCategoria = (excluir=[])=>{
+    const excl = Array.isArray(excluir)?excluir:[excluir].filter(Boolean);
+    const keys = Object.keys(CAT_ACTIVO).filter(k => !excl.includes(k));
     return keys[Math.floor(Math.random()*keys.length)];
   };
-
   function actualizar(){
-    progresoEl.textContent = `${Math.min(ronda, rondasTotales)}/${rondasTotales}`;
-    aciertosHUD.textContent = String(aciertos);
-    if (bar) { bar.style.width = Math.round((Math.min(ronda, rondasTotales)/rondasTotales)*100) + "%"; }
+    if (progresoEl) progresoEl.textContent = `${Math.min(ronda, rondasTotales)}/${rondasTotales}`;
+    if (aciertosHUD) aciertosHUD.textContent = String(aciertos);
+    if (bar) bar.style.width = Math.round((Math.min(ronda, rondasTotales)/rondasTotales)*100) + "%";
+  }
+  // <<< CAMBIO: nunca mostramos el botón grande “Elegir otro juego”
+  function setTopActions(mode){
+    if (mode==='idle'){ btnComenzar.hidden=false; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
+    if (mode==='playing'){ btnComenzar.hidden=true; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
+    if (mode==='finished'){ btnComenzar.hidden=false; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
   }
 
+  /* ===== Rondas ===== */
   function construirRonda(){
-    categoriaActual = elegirCategoria(ultimaCategoria ? [ultimaCategoria] : []);
+    categoriaActual = elegirCategoria(ultimaCategoria || []);
     const otra = elegirCategoria([categoriaActual]);
-
     const correctas = sample(CAT_ACTIVO[categoriaActual], Math.max(2, nOpc-1));
     const intruso = sample(CAT_ACTIVO[otra], 1)[0];
 
     let opciones = barajar([
-      ...correctas.map(x=>({txt:x, ok:false})),
+      ...correctas.map(x => ({txt:x, ok:false})),
       {txt:intruso, ok:true, catIntruso:otra}
     ]).slice(0, nOpc);
 
-    if (!opciones.some(o=>o.ok)) { // asegurar 1 intruso
+    if (!opciones.some(o=>o.ok)){
       opciones[0] = {txt:intruso, ok:true, catIntruso:otra};
       barajar(opciones);
     }
-
     ultimaCategoria = categoriaActual;
     return opciones;
   }
 
-  // ========= Render seguro =========
-  function el(tag, cls, text){
-    const n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = String(text);
-    return n;
-  }
-
+  const el = (t,c,txt)=>{ const n=document.createElement(t); if(c) n.className=c; if(txt!=null) n.textContent=String(txt); return n; };
   function resetOpciones(container){
-    // Limpia cualquier rastro visual por si el DOM se reusa (anti “preselección”)
     container.querySelectorAll('button').forEach(b=>{
-      b.disabled = false;
-      b.classList.remove('marcada','ok','bad','correcta','incorrecta');
-      // no removemos el rol de correcta/incorrecta aquí; se asigna al crear cada ronda
-      b.removeAttribute('aria-disabled');
+      b.disabled=false; b.classList.remove('marcada','ok','bad','correcta','incorrecta'); b.removeAttribute('aria-disabled');
     });
     container.removeAttribute('aria-busy');
   }
 
-  // Construye bloque de acciones (NO lo inserta).
   function crearAcciones(fb){
-    const tpl = document.querySelector('#accionesPlantilla .acciones');
-    const acciones = tpl ? tpl.cloneNode(true) : el('div','acciones');
+    const tpl = document.getElementById('accionesPlantilla');
+    let proto = null;
+    if (tpl){
+      if (tpl.content) proto = tpl.content.querySelector('.acciones');
+      else proto = tpl.querySelector('.acciones');
+    }
+    const acciones = proto ? proto.cloneNode(true) : el('div','acciones');
 
-    // Pista (si existe en la plantilla)
-    const btnPistaLocal = acciones.querySelector?.('.btn-pista');
-    if (btnPistaLocal) {
-      btnPistaLocal.hidden = false;
-      btnPistaLocal.addEventListener('click', ()=>{
-        fb.className = 'feedback';
+    const btnPista = acciones.querySelector('.btn-pista');
+    if (btnPista){
+      btnPista.hidden = false;
+      btnPista.addEventListener('click', ()=>{
+        fb.className='feedback';
         fb.textContent = `Pista: categoría del grupo = “${categoriaActual}”.`;
-        fb.focus();
+        try{ fb.focus(); }catch{}
       });
     }
-
-    // Siguiente
-    const next = el('button', 'btn principal', 'Siguiente');
-    next.disabled = true;
-    next.setAttribute('aria-disabled','true');
+    const next = el('button','btn principal','Siguiente');
+    next.disabled = true; next.setAttribute('aria-disabled','true');
     acciones.appendChild(next);
-
-    return { acciones, next };
+    return {acciones, next};
   }
 
   function renderPregunta(){
-    if (ronda >= rondasTotales){ renderFin(); return; }
-
+    if (ronda>=rondasTotales){ renderFin(); return; }
     const opciones = construirRonda();
 
-    // limpiar contenedor principal
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
 
-    const tarjeta = el('div', 'tarjeta');
-    tarjeta.setAttribute('role','group');
-    tarjeta.setAttribute('aria-labelledby','enunciado');
+    const card = el('div','tarjeta'); card.setAttribute('role','group'); card.setAttribute('aria-labelledby','enunciado');
+    const pb = el('div','progresoBar'); pb.setAttribute('aria-hidden','true'); const fill = el('div'); pb.appendChild(fill); bar=fill; actualizar();
+    const en = el('p','pregunta','🧠 ¿Qué palabra no pertenece al grupo?'); en.id='enunciado';
+    const cont = el('div','opciones');
+    const fb = el('p','feedback'); fb.setAttribute('role','status'); fb.setAttribute('aria-live','polite'); fb.setAttribute('aria-atomic','true'); fb.tabIndex=-1;
+    const {acciones, next} = crearAcciones(fb);
 
-    // barra progreso
-    const pb = el('div', 'progresoBar'); pb.setAttribute('aria-hidden','true');
-    const fill = el('div'); pb.appendChild(fill); bar = fill; actualizar();
-
-    // enunciado
-    const enunciado = el('p', 'pregunta'); enunciado.id = 'enunciado';
-    enunciado.textContent = '🧠 ¿Qué palabra no pertenece al grupo?';
-
-    // opciones
-    const cont = el('div', 'opciones');
-
-    // feedback accesible
-    const fb = el('p', 'feedback');
-    fb.setAttribute('role','status');
-    fb.setAttribute('aria-live','polite');
-    fb.setAttribute('aria-atomic','true');
-    fb.tabIndex = -1;
-
-    // acciones (se insertan al final)
-    const { acciones, next } = crearAcciones(fb);
-
-    // armar botones de opciones
-    opciones.forEach((op, i)=>{
+    opciones.forEach((op,i)=>{
       const b = el('button', op.ok ? 'correcta' : 'incorrecta');
       b.setAttribute('aria-label', `Opción ${i+1}: ${op.txt}`);
-      b.appendChild(el('strong', null, `${i+1}.`));
-      b.appendChild(document.createTextNode(' ' + op.txt));
-      b.addEventListener('click', ()=> elegir(b, op, cont, fb, next));
+      b.appendChild(el('strong',null,`${i+1}.`));
+      b.appendChild(document.createTextNode(' '+op.txt));
+      b.addEventListener('click', ()=> elegir(b,op,cont,fb,next));
       cont.appendChild(b);
     });
 
-    // orden correcto en la tarjeta
-    tarjeta.appendChild(pb);
-    tarjeta.appendChild(enunciado);
-    tarjeta.appendChild(cont);
-    tarjeta.appendChild(fb);
-    tarjeta.appendChild(acciones);
+    card.appendChild(pb); card.appendChild(en); card.appendChild(cont); card.appendChild(fb); card.appendChild(acciones);
+    juegoEl.appendChild(card);
 
-    juegoEl.appendChild(tarjeta);
-
-    // Reset preventivo de estados + foco a primera opción
     resetOpciones(cont);
     requestAnimationFrame(()=>{
-      cont.querySelector('button')?.focus({ preventScroll:true });
-      tarjeta.scrollIntoView({ behavior:'smooth', block:'start' });
+      cont.querySelector('button')?.focus({preventScroll:true});
+      try{ card.scrollIntoView({behavior:'smooth', block:'start'}); }catch{}
     });
 
-    // Atajos 1..5 (una sola vez por render)
-    const onKey = (e)=>{
-      const n = Number.parseInt(e.key, 10);
-      if(Number.isInteger(n) && n>=1 && n<=5){ cont.children[n-1]?.click(); }
+    const onKey = e => {
+      const n = parseInt(e.key,10);
+      if(!isNaN(n) && n>=1 && n<=5 && cont.children[n-1]) cont.children[n-1].click();
+      document.removeEventListener('keydown', onKey);
     };
-    document.addEventListener('keydown', onKey, {once:true});
+    document.addEventListener('keydown', onKey);
   }
 
   function elegir(btn, op, cont, fb, next){
-    // bloquear interacción mientras se evalúa
     cont.setAttribute('aria-busy','true');
-
-    cont.querySelectorAll('button').forEach(b=> b.disabled = true);
+    cont.querySelectorAll('button').forEach(b=> b.disabled=true);
     btn.classList.add('marcada');
 
     if(op.ok){
-      aciertos++;
-      fb.className = 'feedback ok';
+      aciertos++; fb.className='feedback ok';
       fb.textContent = `✔ Correcto. El intruso es “${op.txt}”. La categoría del grupo era “${categoriaActual}”.`;
+      announce('Correcto.');
     } else {
-      fb.className = 'feedback bad';
+      fb.className='feedback bad';
       fb.textContent = `✘ Casi. La categoría del grupo era “${categoriaActual}”.`;
+      announce('Incorrecto.');
     }
 
-    fb.focus();
-    next.disabled = false;
-    next.setAttribute('aria-disabled','false');
-
-    // Reemplazar handler previo y avanzar una sola vez
-    const acciones = next.parentElement;
-    const nextClon = next.cloneNode(true);
-    acciones.replaceChild(nextClon, next);
-    nextClon.addEventListener('click', ()=>{
-      ronda++; actualizar();
-      renderPregunta();
-    }, {once:true});
-
-    // liberar aria-busy con pequeño retraso para que el lector anuncie el feedback
+    try{ fb.focus(); }catch{}
+    next.disabled=false; next.setAttribute('aria-disabled','false');
+    const clon = next.cloneNode(true);
+    next.parentElement.replaceChild(clon,next);
+    clon.addEventListener('click', ()=>{ ronda++; actualizar(); renderPregunta(); });
     setTimeout(()=> cont.removeAttribute('aria-busy'), 120);
   }
 
   function renderFin(){
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
+    const card = el('div','tarjeta');
+    card.appendChild(el('p','pregunta','🎉 ¡Buen trabajo!'));
+    card.appendChild(el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`));
+    card.appendChild(el('p',null,'Podés volver a jugar cambiando las opciones del juego.'));
 
-    const tarjeta = el('div', 'tarjeta');
-    tarjeta.appendChild(el('p','pregunta','🎉 ¡Buen trabajo!'));
-    tarjeta.appendChild(el('p',null,`Tu resultado: ${aciertos} de ${rondasTotales}.`));
-    tarjeta.appendChild(el('p',null,'Podés volver a jugar cambiando el tamaño de texto u opciones por pregunta.'));
-    juegoEl.appendChild(tarjeta);
+    const acc = el('div','acciones');
+    const again = el('button','btn principal','Volver a jugar');
+    again.addEventListener('click', comenzar);
+    acc.appendChild(again);
 
-    btnReiniciar.hidden = false;
-    btnComenzar.hidden = true;
+    // <<< CAMBIO: no agregamos el botón “Elegir otro juego” grande
+    card.appendChild(acc);
+    juegoEl.appendChild(card);
+
+    setTopActions('finished');
+    document.body.classList.remove('fab-compact');
+    announce('Fin del juego.');
   }
 
-  // ========= Preferencias / tamaño =========
-  function aplicarTam(){
-    const muy = selTam.value === 'muy-grande';
-    document.documentElement.classList.toggle('muy-grande', muy);
-    try{ localStorage.setItem('intruso_tamano', muy ? 'muy-grande' : 'grande'); }catch{}
+  /* ===== Iniciar ===== */
+  function comenzar(){
+    btnComenzar.disabled = true;
+    setTopActions('playing');
+    document.body.classList.add('fab-compact');
+    juegoEl.innerHTML = `<div class="tarjeta"><p class="pregunta">⏳ Cargando…</p></div>`;
+
+    initCatalogo().then(()=>{
+      rondasTotales = Number(selRondas?.value || 8);
+      nOpc          = Number(selOpc?.value    || 4);
+      try{
+        if (selRondas) localStorage.setItem('intruso_rondas', selRondas.value);
+        if (selOpc)    localStorage.setItem('intruso_opciones', selOpc.value);
+      }catch{}
+      ronda=0; aciertos=0; ultimaCategoria=null;
+      renderPregunta();
+      announce('Comienza el juego.');
+    }).finally(()=>{
+      btnComenzar.disabled = false;
+    });
   }
 
-  async function comenzar(){
-    await initCatalogo(); // asegurar catálogo
-
-    rondasTotales = Number(selRondas.value);
-    nOpc = Number(selOpc.value);
-
-    try{
-      localStorage.setItem('intruso_rondas', selRondas.value);
-      localStorage.setItem('intruso_opciones', selOpc.value);
-    }catch{}
-
-    ronda = 0; aciertos = 0; ultimaCategoria = null;
-    btnReiniciar.hidden = true;
-    btnComenzar.hidden = true;
-    aplicarTam();
-    renderPregunta();
-  }
-
-  // ========= Eventos =========
   btnComenzar?.addEventListener('click', comenzar);
-  btnReiniciar?.addEventListener('click', ()=>{
-    btnComenzar.hidden = false;
-    while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
-    aciertos = 0; ronda = 0; ultimaCategoria = null; actualizar();
-  });
-  selTam?.addEventListener('change', aplicarTam);
-
+  btnReiniciar?.addEventListener('click', comenzar);
   selRondas?.addEventListener('change', ()=>{ try{ localStorage.setItem('intruso_rondas', selRondas.value); }catch{} });
   selOpc?.addEventListener('change',   ()=>{ try{ localStorage.setItem('intruso_opciones', selOpc.value); }catch{} });
 
-  // Restaurar preferencias
   try{
-    const prefTam = localStorage.getItem('intruso_tamano');
-    setSelectValue(selTam, prefTam, ['grande','muy-grande']); aplicarTam();
-
-    const sR = localStorage.getItem('intruso_rondas');
-    setSelectValue(selRondas, sR, ['6','8','10']);
-
-    const sO = localStorage.getItem('intruso_opciones');
-    setSelectValue(selOpc, sO, ['3','4','5']);
+    const sR=localStorage.getItem('intruso_rondas'); if(sR && ['6','8','10'].includes(sR) && selRondas) selRondas.value=sR;
+    const sO=localStorage.getItem('intruso_opciones'); if(sO && ['3','4','5'].includes(sO) && selOpc) selOpc.value=sO;
   }catch{}
+  actualizar(); setTopActions('idle');
 
-  actualizar();
-
-  // ========= Modal “Acerca de” =========
-  function openAbout(){ aboutModal?.setAttribute('aria-hidden','false'); aboutClose?.focus(); }
-  function closeAbout(){ aboutModal?.setAttribute('aria-hidden','true'); }
+  /* ===== Modal ===== */
+  function openAbout(){ aboutModal?.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll'); document.body.classList.remove('fab-compact'); aboutClose?.focus(); }
+  function closeAbout(){ aboutModal?.setAttribute('aria-hidden','true'); document.body.classList.remove('no-scroll'); if (btnComenzar && btnComenzar.hidden) document.body.classList.add('fab-compact'); }
   aboutBtn?.addEventListener('click', openAbout);
   aboutClose?.addEventListener('click', closeAbout);
-  aboutModal?.addEventListener('click', (e)=>{ if(e.target===aboutModal) closeAbout(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
+  aboutModal?.addEventListener('click', e=>{ if(e.target===aboutModal) closeAbout(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAbout(); });
 
-  // ========= Tema claro/oscuro (LIGHT por defecto) =========
-  function labelFor(mode){ return mode === 'dark' ? 'Usar modo claro' : 'Usar modo oscuro'; }
+  /* ===== Tema FAB ===== */
   function applyTheme(mode){
-    const m = (mode === 'light' || mode === 'dark') ? mode : 'light'; // default light
+    const m = (mode==='dark') ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', m);
-    if (themeBtn) {
-      themeBtn.textContent = labelFor(m);
-      themeBtn.setAttribute('aria-pressed', String(m === 'dark'));
+    if (themeBtn){
+      const isDark = m==='dark';
+      themeBtn.textContent = isDark ? '🌞' : '🌙';
+      themeBtn.setAttribute('aria-pressed', String(isDark));
+      themeBtn.setAttribute('aria-label', isDark ? 'Usar modo claro' : 'Usar modo oscuro');
     }
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', m === 'dark' ? '#0b0b0b' : '#f8fbf4');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', m==='dark' ? '#0e0e0e' : '#f8fbf4');
   }
-
   (function initTheme(){
-    let mode = 'light';
+    let mode='light';
     try{
-      const stored = localStorage.getItem('theme');
-      if (stored === 'light' || stored === 'dark') mode = stored;
+      const stored=localStorage.getItem('theme');
+      if (stored==='light' || stored==='dark') mode=stored;
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) mode='dark';
     }catch{}
     applyTheme(mode);
   })();
-
   themeBtn?.addEventListener('click', ()=>{
     const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    try { localStorage.setItem('theme', next); } catch {}
+    const next = current==='dark' ? 'light' : 'dark';
+    try{ localStorage.setItem('theme', next); }catch{}
     applyTheme(next);
   });
+
+  document.getElementById('soundToggle')?.remove();
+  announce('Listo. Elegí rondas y opciones, y presioná Comenzar.');
 });
+
+/* ===== Service Worker ===== */
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./service-worker.js').then(reg=>{
+      if(reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+      reg.addEventListener('updatefound', ()=>{
+        const sw=reg.installing; if(!sw) return;
+        sw.addEventListener('statechange', ()=>{
+          if(sw.state==='installed' && navigator.serviceWorker.controller){
+            // actualización disponible
+          }
+        });
+      });
+    }).catch(console.error);
+  });
+}
