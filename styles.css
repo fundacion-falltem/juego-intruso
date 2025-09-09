@@ -218,3 +218,54 @@ select:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px; 
 .mini-credit p{ margin:0 }
 .mini-credit a{ color:inherit; text-decoration:underline; font-weight:700 }
 .mini-label{ font-weight:900; color:var(--fg) }
+
+
+/* === FAB de tema: oscuro en modo claro, igual que Cálculo === */
+[data-theme="light"] #themeToggle.fab {
+  background: #1f2937;         /* gris muy oscuro */
+  color: #ffffff;               /* ícono/emoji legible */
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+[data-theme="light"] #themeToggle.fab:hover {
+  filter: brightness(1.02);
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] #themeToggle.fab:focus-visible {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+/* En modo oscuro lo dejamos como estaba (celeste de marca) */
+[data-theme="dark"] #themeToggle.fab {
+  background: var(--btn-sec-bg);
+  color: var(--btn-sec-fg);
+}
+
+/* FABs oscuros en modo claro: tema y ayuda */
+[data-theme="light"] #themeToggle.fab,
+[data-theme="light"] #aboutBtn.fab {
+  background: #1f2937;   /* gris oscuro, buen contraste */
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+[data-theme="light"] #themeToggle.fab:hover,
+[data-theme="light"] #aboutBtn.fab:hover {
+  filter: brightness(1.02);
+  transform: translateY(-1px);
+}
+
+[data-theme="light"] #themeToggle.fab:focus-visible,
+[data-theme="light"] #aboutBtn.fab:focus-visible {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+/* En modo oscuro vuelven al celeste de marca */
+[data-theme="dark"] #themeToggle.fab,
+[data-theme="dark"] #aboutBtn.fab {
+  background: var(--btn-sec-bg);
+  color: var(--btn-sec-fg);
+}
