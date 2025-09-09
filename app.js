@@ -1,7 +1,7 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', function () {
-  const VERSION = "Intruso v2.2.2 (sin CTA externo + startup robusto)";
+  const VERSION = "Intruso v2.2.3 (CTA final a otros juegos)";
   const versionEl = document.getElementById('versionLabel');
   if (versionEl) versionEl.textContent = VERSION;
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "Flores":["rosa","tulipán","margarita","girasol","lirio","jazmín","orquídea","clavel","lavanda","hortensia"]
   });
 
-  /* ===== Catálogo externo con timeout seguro ===== */
+  /* ===== Catálogo externo con timeout ===== */
   let CAT_ACTIVO = CAT;
   let _catalogoListo = false;
 
@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(() => ({categorias:[]}));
   }
   function catalogoAObjetoCAT(data){
-    const o = {};
-    (data.categorias||[]).forEach(c => { o[c.pista] = c.items.slice(); });
+    const o={}; (data.categorias||[]).forEach(c=>{ o[c.pista]=c.items.slice(); });
     return o;
   }
   function initCatalogo(){
@@ -60,15 +59,15 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ===== Estado y refs ===== */
-  let rondasTotales = 8, ronda = 0, aciertos = 0, nOpc = 4, bar;
-  let categoriaActual = null, ultimaCategoria = null;
+  let rondasTotales=8, ronda=0, aciertos=0, nOpc=4, bar;
+  let categoriaActual=null, ultimaCategoria=null;
 
   const juegoEl      = document.getElementById('juego');
   const progresoEl   = document.getElementById('progreso');
   const aciertosHUD  = document.getElementById('aciertos');
   const btnComenzar  = document.getElementById('btnComenzar');
   const btnReiniciar = document.getElementById('btnReiniciar');
-  const btnOtroJuego = document.getElementById('btnOtroJuego'); // lo vamos a ocultar
+  const btnOtroJuego = document.getElementById('btnOtroJuego'); // no se usa arriba
   const selRondas    = document.getElementById('rondas');
   const selOpc       = document.getElementById('opciones');
 
@@ -81,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const announce = t => { if (srUpdates) srUpdates.textContent = t; };
 
   /* ===== Utils ===== */
-  const barajar = a => { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const barajar = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
   const sample  = (a,k)=> a.slice(0).sort(()=>Math.random()-0.5).slice(0, Math.min(k,a.length));
   const elegirCategoria = (excluir=[])=>{
     const excl = Array.isArray(excluir)?excluir:[excluir].filter(Boolean);
@@ -93,8 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (aciertosHUD) aciertosHUD.textContent = String(aciertos);
     if (bar) bar.style.width = Math.round((Math.min(ronda, rondasTotales)/rondasTotales)*100) + "%";
   }
-  // <<< CAMBIO: nunca mostramos el botón grande “Elegir otro juego”
   function setTopActions(mode){
+    // nunca mostramos el CTA superior “Elegir otro juego”
     if (mode==='idle'){ btnComenzar.hidden=false; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
     if (mode==='playing'){ btnComenzar.hidden=true; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
     if (mode==='finished'){ btnComenzar.hidden=false; btnReiniciar.hidden=true; if(btnOtroJuego) btnOtroJuego.hidden=true; }
@@ -139,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const btnPista = acciones.querySelector('.btn-pista');
     if (btnPista){
-      btnPista.hidden = false;
+      btnPista.hidden=false;
       btnPista.addEventListener('click', ()=>{
         fb.className='feedback';
         fb.textContent = `Pista: categoría del grupo = “${categoriaActual}”.`;
@@ -147,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
     const next = el('button','btn principal','Siguiente');
-    next.disabled = true; next.setAttribute('aria-disabled','true');
+    next.disabled=true; next.setAttribute('aria-disabled','true');
     acciones.appendChild(next);
     return {acciones, next};
   }
@@ -159,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
     while (juegoEl.firstChild) juegoEl.removeChild(juegoEl.firstChild);
 
     const card = el('div','tarjeta'); card.setAttribute('role','group'); card.setAttribute('aria-labelledby','enunciado');
-    const pb = el('div','progresoBar'); pb.setAttribute('aria-hidden','true'); const fill = el('div'); pb.appendChild(fill); bar=fill; actualizar();
+    const pb = el('div','progresoBar'); pb.setAttribute('aria-hidden','true'); const fill=el('div'); pb.appendChild(fill); bar=fill; actualizar();
     const en = el('p','pregunta','🧠 ¿Qué palabra no pertenece al grupo?'); en.id='enunciado';
     const cont = el('div','opciones');
     const fb = el('p','feedback'); fb.setAttribute('role','status'); fb.setAttribute('aria-live','polite'); fb.setAttribute('aria-atomic','true'); fb.tabIndex=-1;
@@ -222,11 +221,26 @@ document.addEventListener('DOMContentLoaded', function () {
     card.appendChild(el('p',null,'Podés volver a jugar cambiando las opciones del juego.'));
 
     const acc = el('div','acciones');
+
+    // Volver a jugar
     const again = el('button','btn principal','Volver a jugar');
     again.addEventListener('click', comenzar);
     acc.appendChild(again);
 
-    // <<< CAMBIO: no agregamos el botón “Elegir otro juego” grande
+    // NUEVO: CTA “Elegir otro juego” dentro de la tarjeta final
+    const linkOtro = document.createElement('a');
+    linkOtro.href = 'https://falltem.org/juegos/#games-cards';
+    linkOtro.className = 'btn secundario';
+    linkOtro.textContent = 'Elegir otro juego';
+    linkOtro.setAttribute('role','button');
+    linkOtro.setAttribute('aria-label','Elegir otro juego en el sitio de FALLTEM');
+    // para que coincida el ancho de .acciones button
+    linkOtro.style.display = 'inline-block';
+    linkOtro.style.width = '72%';
+    linkOtro.style.maxWidth = '320px';
+    linkOtro.style.textAlign = 'center';
+    acc.appendChild(linkOtro);
+
     card.appendChild(acc);
     juegoEl.appendChild(card);
 
@@ -305,7 +319,9 @@ document.addEventListener('DOMContentLoaded', function () {
     applyTheme(next);
   });
 
+  // No hay sonidos en este juego
   document.getElementById('soundToggle')?.remove();
+
   announce('Listo. Elegí rondas y opciones, y presioná Comenzar.');
 });
 
