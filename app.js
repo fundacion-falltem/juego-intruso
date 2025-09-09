@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   /* ===== Versión ===== */
-  const VERSION = "Intruso v2.3.0";
+  const VERSION = "Intruso v2.3.1";
   const versionEl = document.getElementById('versionLabel');
   if (versionEl) versionEl.textContent = VERSION;
 
@@ -33,11 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const selOpc      = document.getElementById('opciones');
 
   // FABs / Modal
-  const aboutBtn     = document.getElementById('aboutBtn');
-  const aboutModal   = document.getElementById('aboutModal');
-  const aboutClose   = document.getElementById('aboutClose');
-  const aboutCloseTop= document.getElementById('aboutCloseTop');
-  const themeBtn     = document.getElementById('themeToggle');
+  const aboutBtn      = document.getElementById('aboutBtn');
+  const aboutModal    = document.getElementById('aboutModal');
+  const aboutClose    = document.getElementById('aboutClose');
+  const aboutCloseTop = document.getElementById('aboutCloseTop');
+  const themeBtn      = document.getElementById('themeToggle');
 
   /* ===== Utils ===== */
   const barajar = (arr)=>{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; };
@@ -177,27 +177,43 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=> cont.removeAttribute('aria-busy'), 120);
   }
 
+  /* ===== Feedback por desempeño (positivo) ===== */
+  function tituloPorDesempeno(aciertosVal, totalVal){
+    if (!totalVal) return "¡Gracias por jugar!";
+    if (aciertosVal === 0) return "¡Buen comienzo!";
+    const r = aciertosVal / totalVal;
+    if (r < 0.35) return "¡Buen intento!";
+    if (r < 0.60) return "¡Vas encaminado!";
+    if (r < 0.85) return "¡Muy bien!";
+    return "¡Excelente!";
+  }
+  function mensajePorDesempeno(aciertosVal, totalVal){
+    const r = totalVal ? (aciertosVal / totalVal) : 0;
+    if (aciertosVal === 0) {
+      return "¡Muy bien por practicar! Empezá con menos opciones y a tu ritmo.";
+    } else if (r < 0.35) {
+      return "¡Buen intento! Probá con menos opciones y andá subiendo de a poco.";
+    } else if (r < 0.60) {
+      return "¡Vas encaminado! Mantené la calma y apoyate en la pista cuando aparezca.";
+    } else if (r < 0.85) {
+      return "¡Bien! Si querés, subí la dificultad.";
+    } else {
+      return "¡Excelente precisión! Probá un reto con más opciones.";
+    }
+  }
+
   function renderFin(){
     juegoEl.innerHTML = '';
 
     const tarjeta = el('div','tarjeta');
-    const titulo = el('p','pregunta','🎉 ¡Buen trabajo!');
+
+    const totalSeguro = Math.max(1, Number(rondasTotales) || 1);
+    const tituloTxt   = tituloPorDesempeno(aciertos, totalSeguro);
+    const titulo = el('p','pregunta',`🎉 ${tituloTxt}`);
     tarjeta.appendChild(titulo);
 
-    // Feedback positivo según desempeño
-    const ratio = aciertos / rondasTotales;
-    let msj;
-    if (ratio >= 0.85){
-      msj = `¡Excelente! ${aciertos} de ${rondasTotales}. Tenés muy buena precisión.`;
-    } else if (ratio >= 0.6){
-      msj = `¡Bien! ${aciertos} de ${rondasTotales}. Si querés, subí la dificultad.`;
-    } else if (ratio >= 0.35){
-      msj = `¡Buen intento! ${aciertos} de ${rondasTotales}. Probá con menos opciones y andá subiendo.`;
-    } else {
-      msj = `¡Muy bien por practicar! ${aciertos} de ${rondasTotales}. Empezá con menos opciones y a tu ritmo.`;
-    }
-
-    tarjeta.appendChild(el('p', null, msj));
+    tarjeta.appendChild(el('p', null, `Tu resultado: ${aciertos} de ${rondasTotales}.`));
+    tarjeta.appendChild(el('p', null, mensajePorDesempeno(aciertos, totalSeguro)));
     tarjeta.appendChild(el('p', null, 'Podés volver a jugar cambiando las opciones del juego.'));
 
     // CTAs finales
@@ -231,8 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   btnComenzar?.addEventListener('click', comenzar);
-  selRondas?.addEventListener('change', ()=>{ /* opcional persistencia */ });
-  selOpc?.addEventListener('change', ()=>{ /* opcional persistencia */ });
+  selRondas?.addEventListener('change', ()=>{ /* persistencia opcional */ });
+  selOpc?.addEventListener('change', ()=>{ /* persistencia opcional */ });
 
   actualizar();
 
@@ -260,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const m = (mode==='dark') ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', m);
     if (themeBtn){
+      // ícono + aria-attrs
       themeBtn.textContent = (m==='dark' ? '🌞' : '🌙');
       themeBtn.setAttribute('aria-pressed', String(m==='dark'));
       themeBtn.setAttribute('aria-label', labelFor(m));
