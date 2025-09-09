@@ -3,22 +3,16 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="Juego cognitivo accesible: elegí el intruso del grupo. Sin datos personales."/>
-  <meta name="theme-color" content="#f8fbf4"/>
-  <meta name="color-scheme" content="light dark"/>
+  <meta name="description" content="Juego cognitivo accesible: elegir el intruso (categorización e inhibición), sin datos personales."/>
+  <meta name="theme-color" content="#0b0b0b"/>
+  <meta name="color-scheme" content="dark light"/>
   <meta name="referrer" content="strict-origin-when-cross-origin"/>
 
-  <!-- CSP básica para estáticos locales -->
+  <!-- CSP segura para GitHub Pages / hosting simple -->
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self';
-                 script-src 'self';
-                 style-src 'self' 'unsafe-inline';
-                 font-src 'self';
-                 img-src 'self' data:;
-                 connect-src 'self';
-                 object-src 'none';
-                 base-uri 'none';
-                 form-action 'none'">
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
+                 img-src 'self' data:; font-src 'self'; connect-src 'self';
+                 object-src 'none'; base-uri 'none'; form-action 'none'">
 
   <!-- Open Graph -->
   <meta property="og:title" content="¿Cuál es el intruso? — FALLTEM">
@@ -26,43 +20,64 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://fundacion-falltem.github.io/juego-intruso/">
   <meta property="og:site_name" content="FALLTEM — Juegos Cognitivos">
-  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:card" content="summary">
 
   <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
-
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=2.2.0">
+  <link rel="stylesheet" href="./styles.css?v=2.3.0">
 </head>
 
 <body>
   <a href="#juego" class="skip">Saltar directamente al juego</a>
 
-  <!-- FABs (ayuda + tema) -->
-  <div class="fixed-top-right" aria-hidden="false">
-    <button id="aboutBtn" class="fab" type="button"
-            aria-haspopup="dialog" aria-controls="aboutModal"
-            aria-expanded="false" aria-label="¿Por qué este juego?">?</button>
-    <button id="themeToggle" class="fab" type="button"
-            aria-pressed="false" aria-label="Usar modo oscuro">🌙</button>
+  <!-- FABs (arriba derecha) -->
+  <div class="fixed-top-right">
+    <button id="aboutBtn" class="fab" type="button" aria-haspopup="dialog" aria-controls="aboutModal" aria-expanded="false" aria-label="¿Por qué este juego?">?</button>
+    <button id="themeToggle" class="fab" type="button" aria-pressed="false" aria-label="Usar modo oscuro">🌙</button>
   </div>
 
   <!-- Modal ayuda -->
-  <div id="aboutModal" class="modal" role="dialog" aria-modal="true"
-       aria-hidden="true" aria-labelledby="aboutTitle">
-    <div class="modal-card" role="document">
+  <div id="aboutModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="aboutTitle">
+    <div class="modal-card" role="document" tabindex="-1">
+      <button id="aboutCloseTop" class="btn-x" type="button" aria-label="Cerrar">×</button>
+
       <h2 id="aboutTitle" class="mt0">¿Por qué este juego?</h2>
-      <p>Este juego ejercita <strong>categorización</strong> e <strong>inhibición</strong>. Recomendamos sesiones cortas (8–10 rondas), <strong>2–3 veces por semana</strong>.</p>
+
+      <p>Este ejercicio está inspirado en tareas de <strong>categorización</strong> y <strong>control inhibitorio</strong>. Practicar elegir el “intruso” ayuda a estimular:</p>
       <ul>
-        <li>El entrenamiento cognitivo computarizado en mayores sanos muestra <strong>mejoras modestas</strong> cuando está bien diseñado.<sup>[1]</sup></li>
-        <li>Entrenos de <strong>atención/control</strong> han mostrado <strong>beneficios sostenidos</strong> en adultos mayores.<sup>[2]</sup></li>
-        <li><strong>La dosis importa</strong>: sesiones cortas y regulares; evitar sobreentrenar.<sup>[1]</sup></li>
+        <li><strong>Atención sostenida</strong> (seguir la consigna sin distraerse).</li>
+        <li><strong>Control inhibitorio</strong> (evitar respuestas impulsivas).</li>
+        <li><strong>Flexibilidad cognitiva</strong> (cambiar de criterio según el grupo).</li>
       </ul>
-      <p class="muted"><small>Actividad <strong>lúdica</strong>; no es práctica médica. No almacenamos datos personales.</small></p>
-      <hr class="sep">
-      <p class="muted"><small><strong>Referencias</strong><br>
-        [1] Lampit A. et&nbsp;al., <em>PLOS Medicine</em>, 2014 (meta-análisis).<br>
-        [2] Anguera J.A. et&nbsp;al., <em>Nature</em>, 2013 (multitarea adaptativa).
+
+      <h3 class="mt0">Cómo se juega</h3>
+      <ul>
+        <li>Presioná <strong>Comenzar</strong>.</li>
+        <li>Leé el grupo y elegí el <strong>elemento que no pertenece</strong>.</li>
+        <li>Si necesitás ayuda, usá <em>Mostrar pista</em> cuando esté disponible.</li>
+        <li><strong>Sin límite de tiempo</strong>: respondé con calma.</li>
+      </ul>
+
+      <h3 class="mt0">Sugerencias de práctica</h3>
+      <ul>
+        <li><strong>6–10 rondas</strong> por sesión, <strong>2–3 veces por semana</strong>.</li>
+        <li>Empezá con <strong>menos opciones</strong> y aumentá cuando te resulte fácil.</li>
+        <li>Hacé <strong>pausas breves</strong> entre sesiones; evitá sobreentrenar.</li>
+      </ul>
+
+      <p class="muted"><small>
+        Actividad <strong>lúdica</strong>; no es práctica médica. No recolectamos datos personales.
       </small></p>
+
+      <hr class="sep" aria-hidden="true">
+
+      <p class="muted"><small>
+        <strong>Fundamento</strong><br>
+        1) Lampit A. et&nbsp;al., <em>PLOS Medicine</em>, 2014 — meta-análisis con mejoras modestas cuando el diseño es adecuado.<br>
+        2) Anguera J.A. et&nbsp;al., <em>Nature</em>, 2013 — entrenamiento de control/atención con beneficios sostenidos.<br>
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4381540/" target="_blank" rel="noopener noreferrer">Ver meta-análisis</a> ·
+        <a href="https://www.nature.com/articles/nature12486" target="_blank" rel="noopener noreferrer">Estudio Nature</a>
+      </small></p>
+
       <div class="modal-actions">
         <button id="aboutClose" class="btn principal" type="button">Entendido</button>
       </div>
@@ -74,9 +89,8 @@
       <h1 id="titulo">¿Cuál es el intruso?</h1>
       <p class="intro">Elegí el elemento que <strong>no pertenece</strong> al grupo. Sin límite de tiempo.</p>
 
-      <!-- Controles: 2 selects arriba, acciones debajo (siempre) -->
       <section class="controles" aria-label="Controles del juego">
-        <div class="control control--rondas">
+        <div class="control">
           <label for="rondas">Rondas</label>
           <select id="rondas" aria-label="Elegir número de rondas">
             <option value="6">6 (corto)</option>
@@ -85,7 +99,7 @@
           </select>
         </div>
 
-        <div class="control control--opciones">
+        <div class="control">
           <label for="opciones">Opciones</label>
           <select id="opciones" aria-label="Elegir cantidad de opciones">
             <option value="3">3 (fácil)</option>
@@ -96,39 +110,42 @@
 
         <div class="control control--actions">
           <button id="btnComenzar" class="btn principal" type="button">Comenzar</button>
-          <button id="btnReiniciar" class="btn secundario" type="button" hidden>Volver a jugar</button>
-          <a id="btnOtroJuego" class="btn secundario" href="https://falltem.org/juegos/#games-cards" target="_blank" rel="noopener">Elegir otro juego</a>
         </div>
       </section>
     </header>
 
+    <!-- Juego (se inyecta desde JS) -->
     <section id="juego" class="juego" aria-live="polite"></section>
 
-    <template id="accionesPlantilla">
+    <!-- Plantilla oculta para acciones (pista + siguiente) -->
+    <div id="accionesPlantilla" hidden>
       <div class="acciones acciones-en-tarjeta">
         <button class="btn btn-pista info" type="button" hidden>Mostrar pista</button>
+        <!-- El botón “Siguiente” se inserta desde JS -->
       </div>
-    </template>
+    </div>
 
+    <!-- Estado/puntaje -->
     <section id="estado" class="estado" aria-live="polite">
       <p>Progreso: <span id="progreso">0/0</span> · Aciertos: <span id="aciertos">0</span></p>
     </section>
 
-    <div id="sr-updates" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-
+    <!-- Footer -->
     <footer class="mini-credit" role="contentinfo" aria-label="Créditos y aviso">
       <p>
         <strong class="mini-label">Créditos y aviso:</strong>
-        Desarrollado por <a href="https://falltem.org/" target="_blank" rel="noopener">FALLTEM</a>
-        • Código abierto (MIT) • Uso libre por otras ONG
-        • Actividad lúdica; no es práctica médica • Sin recolección de datos personales
+        Desarrollado por <a href="https://falltem.org/" target="_blank" rel="noopener noreferrer">FALLTEM</a>
+        • Código abierto (MIT)
+        • Uso libre por otras ONG
+        • Actividad lúdica; no es práctica médica
+        • Sin recolección de datos personales
         <br><small>Versión: <strong id="versionLabel"></strong></small>
       </p>
     </footer>
   </main>
 
-  <noscript><p style="margin:1rem">Este juego necesita JavaScript para funcionar.</p></noscript>
+  <noscript><p>Este juego necesita JavaScript para funcionar.</p></noscript>
 
-  <script src="./app.js?v=2.2.0" defer></script>
+  <script src="./app.js?v=2.3.0" defer></script>
 </body>
 </html>

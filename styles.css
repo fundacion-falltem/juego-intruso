@@ -1,92 +1,82 @@
 /* ======================================================
-   FALLTEM — Intruso (odd-one-out) — Tema unificado
+   FALLTEM — Intruso (odd one out) — tema unificado v2.3
+   - Light por defecto, Dark opcional con [data-theme="dark"]
+   - FABs coordinados (tema + ayuda)
+   - Modal scrolleable + botón X
    ====================================================== */
-:root{
+
+:root {
   color-scheme: light dark;
   --fs-base: clamp(18px, 1.2vw + 14px, 22px);
   --space: clamp(12px, 1vw + 8px, 18px);
 
-  --font:"Montserrat",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  --font: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
-  /* LIGHT */
+  /* LIGHT (default) */
   --bg:#f8fbf4; --fg:#1b1b1b; --muted:#50380b;
-  --card:#ffffff; --border:#e5e7eb;
-  --opt-bg:#ffffff; --opt-border:#dfe3e7;
+  --card:#ffffff; --border:#e5e7eb; --opt-bg:#ffffff; --opt-border:#dfe3e7;
 
-  --accent:#99cd68; --accent-2:#5fcbe0; --danger:#ef4444;
+  /* Marca */
+  --accent:#99cd68;     /* verde principal */
+  --accent-2:#5fcbe0;   /* celeste foco/secundario */
 
-  --btn-primary-bg:var(--accent);   --btn-primary-fg:#08340f;
-  --btn-sec-bg:var(--accent-2);     --btn-sec-fg:#072a32;
-  --btn-info-bg:#e8b75b;            --btn-info-fg:#3a2704;
+  /* Botones */
+  --btn-primary-bg: var(--accent);   --btn-primary-fg:#08340f;
+  --btn-sec-bg:     var(--accent-2); --btn-sec-fg:#072a32;
+  --btn-info-bg:    #e8b75b;         --btn-info-fg:#3a2704;
 
-  --ok:#16a34a; --bad:#dc2626; --progress:var(--accent);
-  --focus-color:var(--accent-2);
+  /* Estados/feedback */
+  --ok:#16a34a; --bad:#dc2626; --progress: var(--accent);
+  --focus-color: var(--accent-2);
 }
+
 [data-theme="dark"]{
-  --bg:#0e0e0e; --fg:#f5f5f5; --muted:#cfcfcf;
-  --card:#171717; --border:#2a2a2a;
-  --opt-bg:#1a1a1a; --opt-border:#2b2b2b;
-  --btn-primary-bg:var(--accent); --btn-primary-fg:#0a0a0a;
-  --btn-sec-bg:var(--accent-2);   --btn-sec-fg:#0a0a0a;
-  --btn-info-bg:#e8b75b;          --btn-info-fg:#0a0a0a;
+  --bg:#0b0b0b; --fg:#f5f5f5; --muted:#cfcfcf;
+  --card:#171717; --border:#2a2a2a; --opt-bg:#1a1a1a; --opt-border:#2b2b2b;
+
+  --btn-primary-bg: var(--accent);   --btn-primary-fg:#0a0a0a;
+  --btn-sec-bg:     var(--accent-2); --btn-sec-fg:#0a0a0a;
+  --btn-info-bg:    #e8b75b;         --btn-info-fg:#0a0a0a;
 }
 
-/* Base */
-*{box-sizing:border-box}
-html,body{height:100%}
-html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+*{ box-sizing:border-box }
+html,body{ height:100% }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100% }
 body{
   margin:0; background:var(--bg); color:var(--fg);
   font-family:var(--font); font-size:var(--fs-base);
   line-height:1.7; letter-spacing:.15px;
-  -webkit-tap-highlight-color:transparent;
   padding-bottom: calc(env(safe-area-inset-bottom,0) + var(--space));
+  -webkit-tap-highlight-color: transparent;
 }
-.wrap{max-width:900px; width:min(900px, calc(100% - 2*var(--space))); margin:0 auto; padding:var(--space)}
-.header h1{font-size:clamp(1.9rem,1.7vw + 1rem,2.4rem); margin:.5rem 0; font-weight:900}
-.intro{margin:0 0 var(--space); max-width:68ch}
 
-/* Controles: 2 arriba + acciones debajo en todas las vistas */
+.wrap{ max-width:900px; width:min(900px, calc(100% - 2*var(--space))); margin:0 auto; padding:var(--space) }
+.header h1{ font-size:clamp(1.9rem, 1.7vw + 1rem, 2.4rem); margin:.5rem 0; font-weight:900 }
+.intro{ margin:0 0 var(--space) }
+
+/* Controles */
 .controles{
-  display:grid; gap:1rem; margin:var(--space) 0;
-  grid-template-columns:1fr; 
-  grid-template-areas:
-    "rondas"
-    "opciones"
-    "actions";
-  align-items:end;
+  display:grid; gap:1rem; grid-template-columns: 1fr;
+  margin: var(--space) 0;
 }
-.control{ display:grid; gap:.5rem }
-.control--rondas{ grid-area:rondas }
-.control--opciones{ grid-area:opciones }
-.control--actions{ grid-area:actions; display:flex; flex-direction:column; gap:.6rem }
-.control--actions .btn{ width:100% }
-
-@media (min-width:820px){
-  .controles{
-    grid-template-columns:1fr 1fr;
-    grid-template-areas:
-      "rondas   opciones"
-      "actions  actions";
-  }
-}
-
-label{display:block; font-weight:800; opacity:.98}
+.control label{ display:block; font-weight:800; opacity:.98; margin-bottom:.35rem }
 select{
-  appearance:none;
   background:var(--card); color:var(--fg); border:1px solid var(--border);
   padding:.8rem 1rem; border-radius:.8rem; width:100%; font-size:1.05rem;
+  appearance:none;
   background-image:url("data:image/svg+xml;utf8,<svg fill='currentColor' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5.5 7l4.5 5 4.5-5z'/></svg>");
   background-repeat:no-repeat; background-position:right 1rem center; background-size:1rem; padding-right:2.4rem;
 }
-select:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px; border-color:var(--focus-color) }
+@media (min-width: 820px){
+  .controles{ grid-template-columns: 1fr 1fr; align-items:end }
+  .control--actions{ grid-column: 1 / -1 }
+}
 
 /* Botones */
 .btn{
   border:0; border-radius:16px; cursor:pointer; font-weight:800;
   padding:1rem 1.2rem; min-height:52px; font-size:1.05rem;
   transition: transform .08s ease, filter .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease;
-  text-decoration:none; /* para <a class="btn"> */
 }
 .btn:hover{ filter:brightness(1.04); transform:translateY(-1px) }
 .btn:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px }
@@ -94,46 +84,18 @@ select:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px; 
 .btn.secundario{ background:var(--btn-sec-bg);  color:var(--btn-sec-fg) }
 .btn.info{ background:var(--btn-info-bg); color:var(--btn-info-fg) }
 
-/* FABs */
-.fixed-top-right{
-  position: fixed;
-  right: max(12px, env(safe-area-inset-right, 0));
-  top:   max(12px, env(safe-area-inset-top, 0));
-  display: grid;
-  gap: 12px;
-  z-index: 20;
-
-  /* <- clave: el contenedor NO capta clics fuera de los botones */
-  pointer-events: none;
+/* Que el botón Comenzar ocupe todo el ancho de la fila de controles */
+.control--actions .btn {
+  width: 100%;
 }
 
-.fab{
-  background: var(--btn-sec-bg);
-  color: var(--btn-sec-fg);
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  border: 0;
-  display: grid;
-  place-items: center;
-  font-size: 1.25rem;
-  font-weight: 900;
-  box-shadow: 0 4px 14px rgba(0,0,0,.18);
-  cursor: pointer;
-  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease, background-color .15s ease;
-
-  /* <- clave: sólo el botón recibe los clics */
-  pointer-events: auto;
+/* En pantallas grandes ya hacemos que la fila de acciones ocupe ambas columnas */
+@media (min-width: 820px){
+  .control--actions {
+    grid-column: 1 / -1;      /* ya lo tenías, lo dejamos explícito */
+  }
 }
 
-.fab:hover{ transform: translateY(-1px); filter: brightness(1.04); }
-.fab:focus-visible{ outline: 3px solid var(--focus-color); outline-offset: 3px; }
-
-/* Compactar FABs en juego (móvil) */
-@media (max-width: 520px){
-  .fab-compact .fixed-top-right{ gap: 8px; }
-  .fab-compact .fab{ width: 46px; height: 46px; font-size: 1.05rem; }
-}
 
 
 /* Juego */
@@ -143,14 +105,13 @@ select:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px; 
   border-radius:16px; padding:var(--space);
   box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
-.pregunta{ font-size:clamp(1.4rem,1.4vw + 1rem,1.9rem); margin:0 0 .6rem; font-weight:800 }
+.pregunta{ font-size:clamp(1.4rem, 1.4vw + 1rem, 1.9rem); margin:0 0 .6rem; font-weight:800 }
 
 /* Pista */
 .pista{
-  display:block; background:rgba(95,203,224,.14);
-  border:1px solid rgba(95,203,224,.45);
-  color:#05323a; padding:.7rem .9rem; border-radius:12px;
-  margin:.2rem 0 .8rem; font-weight:700;
+  display:block; background: rgba(95,203,224,.14);
+  border: 1px solid rgba(95,203,224,.45); color:#05323a;
+  padding:.7rem .9rem; border-radius:12px; margin:.2rem 0 .8rem; font-weight:700;
 }
 .pista::before{ content:"💡 "; font-weight:900; margin-right:.25rem }
 
@@ -160,9 +121,8 @@ select:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px; 
 .opciones button{
   text-align:left; background:var(--opt-bg); color:var(--fg);
   border:2px solid var(--opt-border); border-radius:16px;
-  padding:1.1rem 1.2rem; font-size:clamp(1.05rem,.6vw + 1rem,1.25rem);
-  font-weight:800; cursor:pointer; width:100%;
-  white-space:normal; overflow-wrap:anywhere;
+  padding:1.1rem 1.2rem; font-size:clamp(1.05rem, .6vw + 1rem, 1.25rem); font-weight:800;
+  cursor:pointer; width:100%; white-space:normal; overflow-wrap:anywhere;
   transition: transform .15s ease, filter .15s ease, border-color .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease;
   box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
@@ -171,101 +131,100 @@ select:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px; 
   filter:brightness(1.06); transform:translateY(-1px);
   border-color:var(--focus-color); outline:3px solid var(--focus-color); outline-offset:2px;
 }
+
+/* Estados */
 .opciones button.correcta.marcada{
-  background:#dcfce7; border-color:var(--ok); box-shadow:0 0 0 3px rgba(22,163,74,.35);
+  background:#dcfce7; border-color:var(--ok);
+  box-shadow:0 0 0 3px rgba(22,163,74,.35);
 }
 .opciones button.incorrecta.marcada{
-  background:#fee2e2; border-color:var(--bad); box-shadow:0 0 0 3px rgba(220,38,38,.35);
+  background:#fee2e2; border-color:var(--bad);
+  box-shadow:0 0 0 3px rgba(220,38,38,.35);
 }
 .opciones[aria-busy="true"] button{ pointer-events:none; filter:grayscale(.15) opacity(.9) }
 
-/* Acciones en tarjeta */
+/* Acciones */
 .acciones{ margin-top:1rem; display:flex; flex-direction:column; gap:.6rem; align-items:center }
-.acciones .btn{ width:72%; max-width:320px; text-align:center }
+.acciones button{ width:72%; max-width:320px; text-align:center }
 
-/* Progreso / Estado */
+/* Progreso & estado */
 .progresoBar{ height:12px; background:var(--opt-border); border-radius:999px; overflow:hidden; margin:.8rem 0 }
 .progresoBar>div{ height:100%; background:var(--progress); width:0%; transition:width .25s ease }
 .estado{ margin-top:.8rem; font-size:1rem }
 .estado p{ margin:.3rem 0 }
+.muted{ color:var(--muted) }
+.sep{ border:none; border-top:1px solid var(--border); margin:.8rem 0 }
 
-/* Modal */
-.modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:30 }
-.modal[aria-hidden="false"]{ display:block }
-.modal-card{
-  max-width:min(640px, 100% - 2*var(--space));
-  margin:6vh auto; background:var(--card); color:var(--fg);
-  padding:var(--space); border-radius:16px; border:1px solid var(--border);
-  box-shadow:0 4px 12px rgba(0,0,0,.15);
+/* FABs */
+.fixed-top-right{
+  position:fixed; right:max(12px, env(safe-area-inset-right,0));
+  top:max(12px, env(safe-area-inset-top,0));
+  display:grid; gap:12px; z-index:20;
 }
-.mt0{ margin-top:0 }
-.modal-actions{ display:flex; gap:10px; justify-content:flex-end }
+.fab{
+  background:var(--btn-sec-bg); color:var(--btn-sec-fg);
+  width:54px; height:54px; border-radius:50%; border:0;
+  display:grid; place-items:center; font-size:1.25rem; font-weight:900;
+  box-shadow:0 4px 14px rgba(0,0,0,.18); cursor:pointer;
+  transition: transform .08s ease, filter .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.fab:hover{ transform:translateY(-1px); filter:brightness(1.04) }
+.fab:focus-visible{ outline:3px solid var(--focus-color); outline-offset:3px }
 
-/* SR only */
-.sr-only{ position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+/* FABs oscuros en modo claro (como en Cálculo) */
+[data-theme="light"] #themeToggle.fab,
+[data-theme="light"] #aboutBtn.fab{
+  background:#1f2937; color:#fff; box-shadow:0 6px 18px rgba(0,0,0,.25);
+}
+
+/* Compactar FABs en móvil */
+@media (max-width:520px){
+  .fixed-top-right{ gap:8px }
+  .fab{ width:46px; height:46px; font-size:1.05rem }
+}
+
+/* Modal mejorado: scroll + X + bloqueo de fondo */
+.modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:30 }
+.modal[aria-hidden="false"]{
+  display:flex; align-items:center; justify-content:center;
+  padding: clamp(12px, 2vw, 24px);
+}
+.modal-card{
+  width:min(820px, 100%); max-width: min(820px, 100% - 2*var(--space));
+  max-height: min(80vh, 680px);
+  background:var(--card); color:var(--fg);
+  border:1px solid var(--border); border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  padding:var(--space); overflow:auto; -webkit-overflow-scrolling:touch;
+  position:relative;
+}
+.btn-x{
+  position:absolute; top:10px; right:10px; width:40px; height:40px;
+  border-radius:50%; border:0; background:transparent; color:var(--fg);
+  font-size:1.4rem; line-height:1; cursor:pointer;
+}
+.btn-x:hover{ background: color-mix(in oklab, var(--fg) 12%, transparent) }
+.btn-x:focus-visible{ outline:3px solid var(--focus-color); outline-offset:2px }
+.modal-actions{
+  position:sticky; bottom:0; padding-top:var(--space); margin-top:var(--space);
+  background: linear-gradient(to top, var(--card) 70%, rgba(0,0,0,0));
+  display:flex; justify-content:flex-end; gap:10px;
+}
+body.modal-open{ overflow:hidden }
 
 /* Skip link */
 .skip{ position:absolute; left:-9999px; top:auto }
-.skip:focus{ left:max(12px, env(safe-area-inset-left,0)); top:max(12px, env(safe-area-inset-top,0)); background:var(--btn-primary-bg); color:var(--btn-primary-fg); padding:8px 10px; border-radius:8px; z-index:1000 }
+.skip:focus{
+  left:12px; top:12px; background:var(--btn-primary-bg); color:var(--btn-primary-fg);
+  padding:8px 10px; border-radius:8px; z-index:1000;
+}
 
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce){
   *{ transition:none !important; animation:none !important; scroll-behavior:auto !important }
 }
 
-/* Footer */
+/* Footer mini */
 .mini-credit{ margin-top:.6rem; padding:.4rem 0; border-top:1px solid var(--border); font-size:.85em; line-height:1.35; color:var(--muted) }
-.mini-credit p{ margin:0 }
-.mini-credit a{ color:inherit; text-decoration:underline; font-weight:700 }
+.mini-credit p{ margin:0 } .mini-credit a{ color:inherit; text-decoration:underline; font-weight:700 }
 .mini-label{ font-weight:900; color:var(--fg) }
-
-
-/* === FAB de tema: oscuro en modo claro, igual que Cálculo === */
-[data-theme="light"] #themeToggle.fab {
-  background: #1f2937;         /* gris muy oscuro */
-  color: #ffffff;               /* ícono/emoji legible */
-  box-shadow: 0 6px 18px rgba(0,0,0,.25);
-}
-
-[data-theme="light"] #themeToggle.fab:hover {
-  filter: brightness(1.02);
-  transform: translateY(-1px);
-}
-
-[data-theme="light"] #themeToggle.fab:focus-visible {
-  outline: 3px solid var(--focus-color);
-  outline-offset: 3px;
-}
-
-/* En modo oscuro lo dejamos como estaba (celeste de marca) */
-[data-theme="dark"] #themeToggle.fab {
-  background: var(--btn-sec-bg);
-  color: var(--btn-sec-fg);
-}
-
-/* FABs oscuros en modo claro: tema y ayuda */
-[data-theme="light"] #themeToggle.fab,
-[data-theme="light"] #aboutBtn.fab {
-  background: #1f2937;   /* gris oscuro, buen contraste */
-  color: #ffffff;
-  box-shadow: 0 6px 18px rgba(0,0,0,.25);
-}
-
-[data-theme="light"] #themeToggle.fab:hover,
-[data-theme="light"] #aboutBtn.fab:hover {
-  filter: brightness(1.02);
-  transform: translateY(-1px);
-}
-
-[data-theme="light"] #themeToggle.fab:focus-visible,
-[data-theme="light"] #aboutBtn.fab:focus-visible {
-  outline: 3px solid var(--focus-color);
-  outline-offset: 3px;
-}
-
-/* En modo oscuro vuelven al celeste de marca */
-[data-theme="dark"] #themeToggle.fab,
-[data-theme="dark"] #aboutBtn.fab {
-  background: var(--btn-sec-bg);
-  color: var(--btn-sec-fg);
-}
