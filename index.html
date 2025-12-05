@@ -1,238 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>¿Cuál es el intruso? — Juegos Cognitivos FALLTEM</title>
-    <meta
-      name="description"
-      content="Elegí el elemento que no pertenece al grupo. Juego para trabajar categorización, atención y control inhibitorio."
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f8fbf4" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- PWA / íconos -->
-    <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" sizes="192x192" href="images/intruso-icon-192.png" />
-    <link rel="apple-touch-icon" href="images/intruso-icon-192.png" />
+  <title>¿Cuál es el intruso? — Juegos Cognitivos FALLTEM</title>
 
-    <!-- Tokens de diseño compartidos + estilos propios -->
-    <link rel="stylesheet" href="css/falltem-tokens.css" />
-    <link rel="stylesheet" href="css/intruso.css" />
-    <!-- Salida generada por Tailwind (build:css) -->
-    <link rel="stylesheet" href="styles-tailwind.css" />
-  </head>
+  <!-- Tailwind generado -->
+  <link rel="stylesheet" href="./styles-tailwind.css" />
 
-  <body class="page-body">
-    <div class="page-shell">
-      <main class="page-main">
-        <section class="game-card" aria-labelledby="game-title">
-          <!-- cabecera -->
-          <header class="game-card-header">
-            <p class="header-label">Juegos cognitivos FALLTEM</p>
-            <h1 id="game-title" class="game-title">¿Cuál es el intruso?</h1>
-            <p class="game-subtitle">
-              Elegí el elemento que
-              <strong>no pertenece</strong> al grupo. Sin límite de tiempo.
-            </p>
-          </header>
+  <!-- Tokens unificados -->
+  <link rel="stylesheet" href="./css/falltem-tokens.css" />
 
-          <!-- Controles principales -->
-          <div class="game-controls">
-            <div class="control-group">
-              <label for="rondas" class="control-label">Rondas</label>
-              <select id="rondas" class="control-select">
-                <option value="8" selected>8 (recomendado)</option>
-                <option value="10">10</option>
-                <option value="12">12</option>
-              </select>
-            </div>
+  <!-- Estilos propios del juego -->
+  <link rel="stylesheet" href="./css/intruso.css" />
+</head>
 
-            <div class="control-group">
-              <label for="opciones" class="control-label">Opciones</label>
-              <select id="opciones" class="control-select">
-                <option value="4" selected>4 (medio)</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-              </select>
-            </div>
-          </div>
+<body class="bg-falltem-soft text-gray-900">
 
-          <!-- Botón comenzar -->
-          <div class="game-actions">
-            <button
-              id="btnComenzar"
-              type="button"
-              class="btn btn-principal w-full"
-            >
-              Comenzar
-            </button>
-          </div>
+  <main class="max-w-3xl mx-auto p-6">
 
-          <!-- Progreso -->
-          <div class="game-status">
-            <div class="status-row">
-              <span id="progreso">Progreso: 0/8</span>
-              <span id="aciertos">Aciertos: 0</span>
-            </div>
-            <!-- Barra de progreso -->
-            <div class="progreso-wrapper">
-              <div id="progresoBar" class="progreso-bar"></div>
-            </div>
-          </div>
+    <!-- Encabezado -->
+    <header class="mb-6">
+      <p class="header-label">Juegos Cognitivos FALLTEM</p>
+      <h1 class="text-2xl font-bold mt-1">¿Cuál es el intruso?</h1>
+      <p class="text-sm text-gray-600 mt-1">
+        Elegí el elemento que <strong>no pertenece</strong> al grupo. Sin límite de tiempo.
+      </p>
+    </header>
 
-          <!-- Zona de juego (la completa app.js) -->
-          <section
-            id="juego"
-            class="game-area"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <!-- Estado inicial de cortesía; se pisa al comenzar -->
-            <article class="tarjeta tarjeta-inicial">
-              <header class="tarjeta-header">
-                <div class="tarjeta-icono">🧠</div>
-                <h2 class="tarjeta-titulo" id="preguntaTitulo">
-                  Grupo actual
-                </h2>
-              </header>
-              <p class="tarjeta-texto">
-                Presioná <strong>“Comenzar”</strong> para iniciar la primera
-                ronda. Los grupos aparecerán acá.
-              </p>
-            </article>
-          </section>
+    <!-- CONFIGURACIÓN DEL JUEGO -->
+    <section class="bg-white p-4 rounded-xl shadow mb-6">
+      <div class="grid grid-cols-2 gap-4">
 
-          <!-- Créditos -->
-          <footer class="game-footer">
-            <p class="credits">
-              <span class="credits-strong">FALLTEM</span> • Código abierto •
-              Actividad lúdica, sin datos personales
-            </p>
-            <p class="version">
-              Versión: <span id="version">Intruso v2.3.1</span>
-            </p>
-          </footer>
+        <!-- RONDAS -->
+        <div>
+          <label class="config-label">Rondas</label>
+          <select id="select-rondas" class="select-field">
+            <option value="8">8 (recomendado)</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+          </select>
+        </div>
 
-          <!-- Botón "¿Por qué este juego?" arriba a la derecha -->
-          <button
-            id="aboutBtn"
-            type="button"
-            class="help-floating-btn"
-            aria-label="Información sobre este juego"
-          >
-            ?
-          </button>
-        </section>
-      </main>
+        <!-- OPCIONES -->
+        <div>
+          <label class="config-label">Opciones</label>
+          <select id="select-opciones" class="select-field">
+            <option value="4">4 (medio)</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
 
-      <footer class="site-footer">
-        <p class="site-footer-text">
-          Fundación FALLTEM · Juegos Cognitivos en la web
+      <button id="btn-comenzar" class="btn-primary w-full mt-4">
+        Comenzar
+      </button>
+    </section>
+
+    <!-- BLOQUE DE JUEGO -->
+    <section id="bloque-juego" class="hidden bg-white p-4 rounded-xl shadow mb-6">
+
+      <p id="pregunta" class="font-semibold mb-3 text-lg"></p>
+
+      <div id="opciones" class="space-y-2"></div>
+
+      <button id="btn-siguiente" class="btn-primary w-full mt-4 hidden">Siguiente</button>
+
+      <p id="feedback" class="mt-3 text-sm"></p>
+
+    </section>
+
+    <!-- PROGRESO -->
+    <section class="text-sm mt-2 mb-6">
+      <p>
+        Progreso: <span id="progreso">0/0</span> ·
+        Aciertos: <span id="aciertos">0</span>
+      </p>
+    </section>
+
+    <!-- BOTÓN ? -->
+    <button id="btn-info"
+      class="fixed top-4 right-4 text-xl text-gray-600 hover:text-black"
+      title="Información">
+      ?
+    </button>
+
+    <!-- MODAL -->
+    <div id="modal-info"
+         class="hidden fixed inset-0 bg-black/40 flex items-center justify-center p-4">
+
+      <div class="bg-white rounded-xl shadow-xl max-w-md p-6 relative">
+
+        <button id="modal-cerrar"
+                class="absolute top-3 right-3 border border-gray-300 rounded-full px-2">
+          ×
+        </button>
+
+        <h2 class="text-lg font-bold mb-3">¿Por qué este juego?</h2>
+
+        <p class="mb-2">
+          Este ejercicio entrena tareas de <strong>categorización</strong> y
+          <strong>control inhibitorio</strong>.
         </p>
-      </footer>
-    </div>
 
-    <!-- Modal: ¿Por qué este juego? -->
-    <div
-      id="aboutModal"
-      class="about-modal hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="aboutTitle"
-    >
-      <div class="about-backdrop"></div>
-      <div class="about-dialog">
-        <header class="about-header">
-          <h2 id="aboutTitle" class="about-title">¿Por qué este juego?</h2>
-          <button
-            id="aboutCloseTop"
-            type="button"
-            class="about-close-top"
-            aria-label="Cerrar"
-          >
-            ×
-          </button>
-        </header>
+        <ul class="list-disc ml-6 mb-3 text-sm">
+          <li>Atención sostenida</li>
+          <li>Control inhibitorio</li>
+          <li>Flexibilidad cognitiva</li>
+        </ul>
 
-        <div class="about-body">
-          <p>
-            Este ejercicio está inspirado en tareas de
-            <strong>categorización</strong> y
-            <strong>control inhibitorio</strong>.
-          </p>
-          <p>Practicar elegir el “intruso” ayuda a estimular:</p>
+        <p class="font-bold mb-2">Cómo se juega</p>
+        <p class="text-sm mb-4">
+          Presioná <strong>Comenzar</strong>. Elegí el elemento que
+          <strong>no pertenece</strong>. Podés usar la función “Mostrar pista”
+          cuando esté disponible.
+        </p>
 
-          <ul class="about-list">
-            <li>
-              <strong>Atención sostenida</strong> (seguir la consigna sin
-              distraerse).
-            </li>
-            <li>
-              <strong>Control inhibitorio</strong> (evitar respuestas
-              impulsivas).
-            </li>
-            <li>
-              <strong>Flexibilidad cognitiva</strong> (cambiar de criterio según
-              el grupo).
-            </li>
-          </ul>
+        <button id="modal-ok" class="btn-primary w-full">Entendido</button>
 
-          <h3 class="about-subtitle">Cómo se juega</h3>
-          <ul class="about-list">
-            <li>Presioná <strong>Comenzar</strong>.</li>
-            <li>
-              Mirá el grupo de palabras y elegí la que
-              <strong>no pertenece</strong>.
-            </li>
-            <li>
-              Si lo necesitás, usá la función
-              <strong>“Mostrar pista”</strong> cuando esté disponible.
-            </li>
-            <li>
-              <strong>Sin límite de tiempo:</strong> respondé con calma y a tu
-              ritmo.
-            </li>
-          </ul>
-        </div>
-
-        <footer class="about-footer">
-          <button
-            id="aboutClose"
-            type="button"
-            class="btn btn-principal w-full"
-          >
-            Entendido
-          </button>
-        </footer>
       </div>
     </div>
 
-    <!-- Plantilla interna para las acciones (pista / siguiente) -->
-    <template id="accionesPlantilla">
-      <div class="acciones">
-        <p id="mensajeFeedback" class="feedback" aria-live="polite"></p>
+    <!-- FOOTER -->
+    <footer class="text-xs text-gray-600 mt-10">
+      <p><strong>FALLTEM</strong> · Código abierto · Actividad lúdica, sin datos personales</p>
+      <p>Versión: Intruso v2.3.1</p>
+      <p class="mt-1">Fundación FALLTEM · Juegos Cognitivos en la web</p>
+    </footer>
 
-        <div class="acciones-botones">
-          <button
-            id="btnPista"
-            type="button"
-            class="btn btn-secundario btn-pista"
-          >
-            Mostrar pista
-          </button>
-          <button
-            id="btnSiguiente"
-            type="button"
-            class="btn btn-principal"
-          >
-            Siguiente
-          </button>
-        </div>
+  </main>
 
-        <p id="pistaTexto" class="pista-texto"></p>
-      </div>
-    </template>
+  <!-- Lógica del juego -->
+  <script src="./app.js"></script>
 
-    <script src="app.js" defer></script>
-  </body>
+</body>
 </html>
