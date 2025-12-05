@@ -1,167 +1,116 @@
-/* Layout general, igual que cálculo/memoria */
+/* intruso.css — versión unificada Falltem */
 
-.page-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-  background: var(--color-page-bg, #f4f7fb);
-  color: var(--color-text-main, #111827);
-}
-
-/* Saltar al juego */
-.skip-link {
-  position: absolute;
-  left: -999px;
-  top: 0.75rem;
-  padding: 0.5rem 1rem;
-  background: #fff;
-  border-radius: 999px;
-  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.18);
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-brand, #16a34a);
-  text-decoration: none;
-  z-index: 50;
-}
-
-.skip-link:focus-visible {
-  left: 1rem;
-}
-
-/* Contenedor centrado */
-.wrap {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Contenedor principal */
+.game-container {
+  max-width: 720px;
+  margin: 0 auto;
   padding: 1.5rem;
 }
 
-/* Tarjeta principal del juego */
-.card {
-  width: 100%;
-  max-width: 720px;
-  background: #ffffff;
-  border-radius: 1.5rem;
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.16);
-  padding: 2rem 2.25rem 1.75rem;
-}
-
-/* Encabezado */
-.card h1 {
-  margin: 0 0 0.5rem;
-  font-size: 1.75rem;
-  line-height: 1.2;
-  font-weight: 800;
-}
-
-.card p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--color-text-muted, #4b5563);
-}
-
-/* Controles superiores (Rondas / Opciones / Comenzar) */
-.controles-superiores {
-  margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  align-items: end;
-}
-
-.controles-superiores .control-group {
-  font-size: 0.85rem;
-}
-
-.controles-superiores label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-label, #6b7280);
-}
-
-.controles-superiores select {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
-  font-size: 0.9rem;
-}
-
-.btn-primario {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.65rem 1.8rem;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.95rem;
-  background: var(--color-brand, #84cc16);
-  color: #fff;
-  transition: background 120ms ease, transform 80ms ease,
-    box-shadow 120ms ease;
-}
-
-.btn-primario:hover {
-  background: var(--color-brand-strong, #65a30d);
-  transform: translateY(-1px);
-  box-shadow: 0 14px 45px rgba(101, 163, 13, 0.35);
-}
-
-.btn-primario:active {
-  transform: translateY(1px);
-  box-shadow: none;
-}
-
-/* Pregunta y opciones (adaptá las clases de tus elementos si querés que usen esto) */
-
-.bloque-pregunta {
-  margin-top: 1.75rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border-subtle, #e5e7eb);
-}
-
-.bloque-pregunta h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.opciones-grid {
-  display: grid;
-  gap: 0.6rem;
-}
-
-.opcion-btn {
-  width: 100%;
-  text-align: left;
-  padding: 0.7rem 0.9rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
-  background: #fff;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-
-/* Progreso y créditos */
-.progreso-linea {
-  margin-top: 1.5rem;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
-}
-
-.creditos {
-  margin-top: 1.2rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #e5e7eb;
+/* Título */
+.header-label {
   font-size: 0.75rem;
-  color: var(--color-text-muted, #6b7280);
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-brand); /* igual que cálculo/memoria */
+}
+
+/* Card principal */
+.card {
+  background: #fff;
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  padding: 1.75rem;
+  margin-top: 1.25rem;
+}
+
+/* Texto secundario */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* Botón primario */
+.btn-primary {
+  background: var(--color-brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--color-brand-strong);
+}
+
+/* Opciones */
+.option-btn {
+  border: 1px solid var(--color-border-subtle);
+  background: #fff;
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.option-btn:hover {
+  background: #f5f7fb;
+}
+
+/* Estados */
+.correct {
+  background: #dcfce7 !important;
+  border-color: #16a34a !important;
+}
+
+.incorrect {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+}
+
+/* Progreso */
+.progress-line {
+  height: 4px;
+  background: var(--color-border-subtle);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.progress-line > div {
+  height: 100%;
+  background: var(--color-brand);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Modal */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-bg.show {
+  display: flex;
+}
+
+.modal-card {
+  background: #fff;
+  max-width: 540px;
+  padding: 1.5rem;
+  border-radius: 1rem;
+}
+
+.modal-close {
+  font-size: 1.5rem;
+  cursor: pointer;
+  float: right;
 }
