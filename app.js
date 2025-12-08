@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnOtros = document.createElement("a");
     btnOtros.className = "btn secundario";
-    btnOtros.href = "https://fundacion-falltem.github.io/juegos/";
+    btnOtros.href = "https://falltem.org/juegos/";
     btnOtros.textContent = "Elegir otro juego";
 
     acciones.append(btnReint, btnOtros);
