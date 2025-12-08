@@ -102,6 +102,7 @@ select {
 .pregunta {
   font-size: clamp(1.6rem, 1.4vw + 1rem, 2rem);
   font-weight: 900;
+  margin-bottom: 1rem;
 }
 
 /* ===== Opciones ===== */
@@ -183,7 +184,7 @@ select {
   color: var(--bad);
 }
 
-/* ===== Acciones (pista, siguiente, final) ===== */
+/* ===== Acciones ===== */
 .acciones {
   margin-top: 1.3rem;
   display: flex;
@@ -196,15 +197,21 @@ select {
   width: clamp(160px, 42%, 260px);
 }
 
-/* Pista */
-.pista {
-  background: rgba(95,203,224,.14);
-  border: 1px solid rgba(95,203,224,.45);
-  color: #05323a;
-  padding: .7rem 1rem;
-  border-radius: 12px;
-  margin-top: .4rem;
-  font-weight: 700;
+/* ===== BOTÓN DE PISTA — versión más visible ===== */
+.btn.info {
+  background: #ffe48a;             /* amarillo visible */
+  border: 2px solid #ffd769;       /* borde consistente */
+  color: #5b4600;
+  font-weight: 800;
+  border-radius: 16px;
+  padding: 0.9rem 1.2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  cursor: pointer;
+  text-align: center;
+}
+.btn.info:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
 /* ===== Botones ===== */
@@ -216,7 +223,6 @@ select {
   cursor: pointer;
   transition: transform .1s ease, filter .15s ease;
 }
-
 .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
 
 .btn:focus-visible {
@@ -228,30 +234,20 @@ select {
   background: var(--accent);
   color: white;
 }
-
 .btn.secundario {
   background: var(--accent-2);
   color: #05323a;
 }
 
-.btn.info {
-  background: var(--info);
-  color: #3a2704;
-}
-
-/* ===== Progreso ===== */
-.progresoBar {
-  height: 12px;
-  background: var(--border);
-  border-radius: 999px;
-  overflow: hidden;
-  margin: .8rem 0;
-}
-.progresoBar > div {
-  height: 100%;
-  background: var(--accent);
-  width: 0%;
-  transition: width .25s ease;
+/* ===== Pista ===== */
+.pista {
+  background: rgba(95,203,224,.14);
+  border: 1px solid rgba(95,203,224,.45);
+  color: #05323a;
+  padding: .7rem 1rem;
+  border-radius: 12px;
+  margin-top: .4rem;
+  font-weight: 700;
 }
 
 /* ===== HUD ===== */
@@ -272,7 +268,6 @@ select {
   gap: .6rem;
   z-index: 40;
 }
-
 .fab {
   width: 40px;
   height: 40px;
