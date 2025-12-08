@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const aboutModal    = document.getElementById('aboutModal');
   const aboutClose    = document.getElementById('aboutClose');
   const aboutCloseTop = document.getElementById('aboutCloseTop');
-  const themeBtn      = document.getElementById('themeToggle');
 
   /* ===== Utils ===== */
   const barajar = (arr)=>{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; };
@@ -216,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tarjeta.appendChild(el('p', null, mensajePorDesempeno(aciertos, totalSeguro)));
     tarjeta.appendChild(el('p', null, 'Podés volver a jugar cambiando las opciones del juego.'));
 
-    // CTAs finales
     const ctas = el('div','acciones');
     const btnRejugar = el('button','btn principal','Volver a jugar');
     btnRejugar.addEventListener('click', ()=>{
@@ -247,10 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   btnComenzar?.addEventListener('click', comenzar);
-  selRondas?.addEventListener('change', ()=>{ /* persistencia opcional */ });
-  selOpc?.addEventListener('change', ()=>{ /* persistencia opcional */ });
-
-  actualizar();
 
   /* ===== Modal ===== */
   function openAbout(){
@@ -270,32 +264,34 @@ document.addEventListener('DOMContentLoaded', () => {
   aboutModal?.addEventListener('click', (e)=>{ if(e.target===aboutModal) closeAbout(); });
   document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
 
-  /* ===== Tema (LIGHT por defecto con persistencia) ===== */
-  function labelFor(mode){ return mode==='dark' ? 'Usar modo claro' : 'Usar modo oscuro'; }
-  function applyTheme(mode){
-    const m = (mode==='dark') ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', m);
-    if (themeBtn){
-      // ícono + aria-attrs
-      themeBtn.textContent = (m==='dark' ? '🌞' : '🌙');
-      themeBtn.setAttribute('aria-pressed', String(m==='dark'));
-      themeBtn.setAttribute('aria-label', labelFor(m));
+
+
+   /* JS PARA TABS (NO ROMPE NADA — INDEPENDIENTE DEL JUEGO) */
+
+    const tabHow = document.getElementById("aboutTabHow");
+    const tabWhy = document.getElementById("aboutTabWhy");
+    const panelHow = document.getElementById("aboutPanelHow");
+    const panelWhy = document.getElementById("aboutPanelWhy");
+
+    function selectTab(showHow) {
+      if (showHow) {
+        tabHow.setAttribute("aria-selected", "true");
+        tabWhy.setAttribute("aria-selected", "false");
+        tabWhy.setAttribute("tabindex", "-1");
+
+        panelHow.hidden = false;
+        panelWhy.hidden = true;
+      } else {
+        tabHow.setAttribute("aria-selected", "false");
+        tabWhy.setAttribute("aria-selected", "true");
+        tabWhy.removeAttribute("tabindex");
+
+        panelHow.hidden = true;
+        panelWhy.hidden = false;
+      }
     }
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute('content', m==='dark' ? '#0b0b0b' : '#f8fbf4');
-  }
-  (function initTheme(){
-    let mode = 'light';
-    try{
-      const stored = localStorage.getItem('theme');
-      if (stored==='dark' || stored==='light') mode = stored;
-    }catch{}
-    applyTheme(mode);
-  })();
-  themeBtn?.addEventListener('click', ()=>{
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    try{ localStorage.setItem('theme', next); }catch{}
-    applyTheme(next);
-  });
+
+    tabHow?.addEventListener("click", () => selectTab(true));
+    tabWhy?.addEventListener("click", () => selectTab(false));
+
 });

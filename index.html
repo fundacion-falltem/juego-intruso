@@ -1,98 +1,53 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es-AR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="Juego cognitivo accesible: elegir el intruso (categorización e inhibición), sin datos personales."/>
-  <meta name="theme-color" content="#0b0b0b"/>
-  <meta name="color-scheme" content="dark light"/>
-  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- CSP segura para GitHub Pages / hosting simple -->
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
-                 img-src 'self' data:; font-src 'self'; connect-src 'self';
-                 object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>¿Cuál es el intruso? — Juegos Cognitivos FALLTEM</title>
+  <meta name="description" content="Juego cognitivo accesible: elegí el elemento que no pertenece al grupo. Estimula categorización, control inhibitorio y atención sostenida.">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="¿Cuál es el intruso? — FALLTEM">
-  <meta property="og:description" content="Juego cognitivo accesible: categorización e inhibición, sin datos personales.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://fundacion-falltem.github.io/juego-intruso/">
-  <meta property="og:site_name" content="FALLTEM — Juegos Cognitivos">
-  <meta name="twitter:card" content="summary">
+  <!-- Fuente Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
 
-  <title>¿Cuál es el intruso? — Juegos Cognitivos</title>
-  <link rel="stylesheet" href="./styles.css?v=2.3.0">
+  <!-- Tailwind (CDN configurado) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tokens FALLTEM -->
+  <link rel="stylesheet" href="css/falltem-tokens.css">
+
+  <!-- Estilos del juego Intruso -->
+  <link rel="stylesheet" href="css/intruso.css">
 </head>
 
 <body>
-  <a href="#juego" class="skip">Saltar directamente al juego</a>
+  <!-- Skip -->
+  <a href="#juego" class="skip">Saltar al juego</a>
 
-  <!-- FABs (arriba derecha) -->
-  <div class="fixed-top-right">
-    <button id="aboutBtn" class="fab" type="button" aria-haspopup="dialog" aria-controls="aboutModal" aria-expanded="false" aria-label="¿Por qué este juego?">?</button>
-    <button id="themeToggle" class="fab" type="button" aria-pressed="false" aria-label="Usar modo oscuro">🌙</button>
+  <!-- FAB ayuda -->
+  <div class="fab-stack">
+    <button id="aboutBtn" class="fab" aria-haspopup="dialog" aria-controls="aboutModal" aria-expanded="false">?</button>
   </div>
 
-  <!-- Modal ayuda -->
-  <div id="aboutModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="aboutTitle">
-    <div class="modal-card" role="document" tabindex="-1">
-      <button id="aboutCloseTop" class="btn-x" type="button" aria-label="Cerrar">×</button>
-
-      <h2 id="aboutTitle" class="mt0">¿Por qué este juego?</h2>
-
-      <p>Este ejercicio está inspirado en tareas de <strong>categorización</strong> y <strong>control inhibitorio</strong>. Practicar elegir el “intruso” ayuda a estimular:</p>
-      <ul>
-        <li><strong>Atención sostenida</strong> (seguir la consigna sin distraerse).</li>
-        <li><strong>Control inhibitorio</strong> (evitar respuestas impulsivas).</li>
-        <li><strong>Flexibilidad cognitiva</strong> (cambiar de criterio según el grupo).</li>
-      </ul>
-
-      <h3 class="mt0">Cómo se juega</h3>
-      <ul>
-        <li>Presioná <strong>Comenzar</strong>.</li>
-        <li>Leé el grupo y elegí el <strong>elemento que no pertenece</strong>.</li>
-        <li>Si necesitás ayuda, usá <em>Mostrar pista</em> cuando esté disponible.</li>
-        <li><strong>Sin límite de tiempo</strong>: respondé con calma.</li>
-      </ul>
-
-      <h3 class="mt0">Sugerencias de práctica</h3>
-      <ul>
-        <li><strong>6–10 rondas</strong> por sesión, <strong>2–3 veces por semana</strong>.</li>
-        <li>Empezá con <strong>menos opciones</strong> y aumentá cuando te resulte fácil.</li>
-        <li>Hacé <strong>pausas breves</strong> entre sesiones; evitá sobreentrenar.</li>
-      </ul>
-
-      <p class="muted"><small>
-        Actividad <strong>lúdica</strong>; no es práctica médica. No recolectamos datos personales.
-      </small></p>
-
-      <hr class="sep" aria-hidden="true">
-
-      <p class="muted"><small>
-        <strong>Fundamento</strong><br>
-        1) Lampit A. et&nbsp;al., <em>PLOS Medicine</em>, 2014 — meta-análisis con mejoras modestas cuando el diseño es adecuado.<br>
-        2) Anguera J.A. et&nbsp;al., <em>Nature</em>, 2013 — entrenamiento de control/atención con beneficios sostenidos.<br>
-        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4381540/" target="_blank" rel="noopener noreferrer">Ver meta-análisis</a> ·
-        <a href="https://www.nature.com/articles/nature12486" target="_blank" rel="noopener noreferrer">Estudio Nature</a>
-      </small></p>
-
-      <div class="modal-actions">
-        <button id="aboutClose" class="btn principal" type="button">Entendido</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- WRAPPER PRINCIPAL -->
   <main class="wrap" role="main" aria-labelledby="titulo">
-    <header class="header">
-      <h1 id="titulo">¿Cuál es el intruso?</h1>
-      <p class="intro">Elegí el elemento que <strong>no pertenece</strong> al grupo. Sin límite de tiempo.</p>
 
+    <!-- HEADER -->
+    <header class="header">
+      <p class="header-label">Juegos Cognitivos FALLTEM</p>
+      <h1 id="titulo">¿Cuál es el intruso?</h1>
+      <p class="intro">
+        Observá el conjunto y elegí el elemento que <strong>no pertenece</strong>.  
+        Sin límite de tiempo: jugá a tu ritmo.
+      </p>
+
+      <!-- CONTROLES -->
       <section class="controles" aria-label="Controles del juego">
         <div class="control">
           <label for="rondas">Rondas</label>
-          <select id="rondas" aria-label="Elegir número de rondas">
+          <select id="rondas">
             <option value="6">6 (corto)</option>
             <option value="8" selected>8 (recomendado)</option>
             <option value="10">10 (completo)</option>
@@ -101,7 +56,7 @@
 
         <div class="control">
           <label for="opciones">Opciones</label>
-          <select id="opciones" aria-label="Elegir cantidad de opciones">
+          <select id="opciones">
             <option value="3">3 (fácil)</option>
             <option value="4" selected>4 (medio)</option>
             <option value="5">5 (reto)</option>
@@ -114,38 +69,112 @@
       </section>
     </header>
 
-    <!-- Juego (se inyecta desde JS) -->
+    <!-- JUEGO (contenido dinámico) -->
     <section id="juego" class="juego" aria-live="polite"></section>
 
-    <!-- Plantilla oculta para acciones (pista + siguiente) -->
+    <!-- PLANTILLA PARA ACCIONES EN TARJETA -->
     <div id="accionesPlantilla" hidden>
       <div class="acciones acciones-en-tarjeta">
-        <button class="btn btn-pista info" type="button" hidden>Mostrar pista</button>
-        <!-- El botón “Siguiente” se inserta desde JS -->
+        <button class="btn info btn-pista" type="button" hidden>Mostrar pista</button>
       </div>
     </div>
 
-    <!-- Estado/puntaje -->
+    <!-- HUD -->
     <section id="estado" class="estado" aria-live="polite">
-      <p>Progreso: <span id="progreso">0/0</span> · Aciertos: <span id="aciertos">0</span></p>
+      <p>Progreso: <strong id="progreso">0/0</strong> · Aciertos: <strong id="aciertos">0</strong></p>
     </section>
 
-    <!-- Footer -->
-    <footer class="mini-credit" role="contentinfo" aria-label="Créditos y aviso">
+    <!-- CRÉDITOS -->
+    <footer class="mini-credit">
       <p>
         <strong class="mini-label">Créditos y aviso:</strong>
-        Desarrollado por <a href="https://falltem.org/" target="_blank" rel="noopener noreferrer">FALLTEM</a>
-        • Código abierto (MIT)
-        • Uso libre por otras ONG
-        • Actividad lúdica; no es práctica médica
-        • Sin recolección de datos personales
+        Desarrollado por <strong>FALLTEM</strong> · Código abierto MIT · Actividad lúdica; no es práctica médica.  
+        Sin recolección de datos personales.  
         <br><small>Versión: <strong id="versionLabel"></strong></small>
       </p>
     </footer>
   </main>
 
-  <noscript><p>Este juego necesita JavaScript para funcionar.</p></noscript>
+  <!-- =========================================================
+       MODAL UNIFICADO (CON TABS) — igual a Memoria
+  ========================================================== -->
+  <div id="aboutModal" class="modal" aria-hidden="true" aria-labelledby="aboutTitle" aria-modal="true">
+    <div class="modal-card" role="document" tabindex="-1">
 
-  <script src="./app.js?v=2.3.0" defer></script>
+      <button id="aboutCloseTop" class="btn-x" aria-label="Cerrar">×</button>
+      <h2 id="aboutTitle" class="modal-title">¿Cuál es el intruso?</h2>
+
+      <!-- TABS -->
+      <div class="modal-tabs">
+        <button id="aboutTabHow" class="modal-tab" type="button" aria-selected="true">
+          ¿Cómo se juega?
+        </button>
+
+        <button id="aboutTabWhy" class="modal-tab" type="button" aria-selected="false" tabindex="-1">
+          ¿Por qué este juego?
+        </button>
+      </div>
+
+      <!-- PANEL: ¿Cómo se juega? -->
+      <div id="aboutPanelHow" class="modal-panel">
+        <p>El objetivo es elegir la palabra que <strong>no pertenece</strong> al grupo.</p>
+        <ul>
+          <li>Presioná <strong>Comenzar</strong>.</li>
+          <li>Observá el conjunto de palabras.</li>
+          <li>Elegí el elemento que no encaja.</li>
+          <li>Si necesitás ayuda, usá <strong>Mostrar pista</strong>.</li>
+          <li>No hay límite de tiempo: respondé con calma.</li>
+        </ul>
+        <p class="muted"><small>
+          Podés aumentar opciones o rondas para un desafío mayor.
+        </small></p>
+      </div>
+
+      <!-- PANEL: ¿Por qué este juego? -->
+      <div id="aboutPanelWhy" class="modal-panel" hidden>
+        <p>
+          Este ejercicio entrena:
+        </p>
+        <ul>
+          <li><strong>Categorización</strong>: identificar relaciones entre conceptos.</li>
+          <li><strong>Control inhibitorio</strong>: evitar respuestas impulsivas.</li>
+          <li><strong>Atención sostenida</strong>: mantener la consigna sin distraerse.</li>
+          <li><strong>Flexibilidad cognitiva</strong>: cambiar criterio cuando es necesario.</li>
+        </ul>
+
+        <h3>Fundamento</h3>
+        <p>
+          1) Lampit A. et al., <em>PLOS Medicine</em>, 2014 —  
+          meta-análisis con mejoras modestas cuando el diseño es adecuado.
+        </p>
+        <p>
+          2) Anguera J.A. et al., <em>Nature</em>, 2013 —  
+          entrenamiento de control/atención con beneficios sostenidos.
+        </p>
+
+        <p class="muted small-links">
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4381540/" target="_blank" rel="noopener noreferrer">
+            Ver meta-análisis (PLOS Medicine)
+          </a> ·
+          <a href="https://www.nature.com/articles/nature12486" target="_blank" rel="noopener noreferrer">
+            Estudio Nature
+          </a>
+        </p>
+
+        <p class="muted"><small>
+          Actividad lúdica; no es práctica médica. No recolectamos datos personales.
+        </small></p>
+      </div>
+
+      <div class="modal-actions">
+        <button id="aboutClose" class="btn principal" type="button">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS PRINCIPAL -->
+  <script src="app.js"></script>
+
+
 </body>
 </html>
