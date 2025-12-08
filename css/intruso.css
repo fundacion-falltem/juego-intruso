@@ -1,7 +1,7 @@
 /* ======================================================
-   FALLTEM — Intruso (UI Unificada con Memoria + Tokens)
+   FALLTEM — Intruso (UI Unificada con Memoria)
    Depende de: falltem-tokens.css
-   ====================================================== */
+====================================================== */
 
 /* ===== Contenedor principal ===== */
 .wrap {
@@ -65,6 +65,22 @@
   grid-column: 1 / -1;
 }
 
+/* ===== Selects ===== */
+select {
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 0.8rem 1rem;
+  border-radius: 0.8rem;
+  font-size: 1.05rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5.5 7l4.5 5 4.5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.4rem;
+}
+
 /* ===== Juego ===== */
 .juego {
   display: grid;
@@ -72,7 +88,7 @@
   margin-top: 1rem;
 }
 
-/* Card donde se muestra la ronda */
+/* Card donde se muestra cada ronda */
 .tarjeta {
   background: var(--card);
   border-radius: 20px;
@@ -87,16 +103,110 @@
   font-weight: 900;
 }
 
+/* ===== Pista ===== */
+.pista {
+  display: block;
+  background: rgba(95,203,224,.14);
+  border: 1px solid rgba(95,203,224,.45);
+  color: #05323a;
+  padding: .7rem .9rem;
+  border-radius: 12px;
+  margin: .2rem 0 .8rem;
+  font-weight: 700;
+}
+.pista::before {
+  content:"💡 ";
+  font-weight: 900;
+  margin-right:.25rem;
+}
+
+/* ===== Opciones ===== */
+.opciones {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 820px) {
+  .opciones {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.opciones button {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+
+  font-weight: 800;
+  font-size: clamp(1.05rem, 0.6vw + 1rem, 1.25rem);
+  cursor: pointer;
+
+  box-shadow: 0 3px 8px rgba(15,23,42,0.08);
+
+  transition:
+    transform .12s ease,
+    border-color .15s ease,
+    background-color .15s ease,
+    box-shadow .15s ease;
+}
+
+.opciones button:hover,
+.opciones button:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--focus);
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Estados correcto/incorrecto */
+.opciones button.correcta.marcada {
+  background: #e8f5e9;
+  border-color: var(--ok);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
+}
+.opciones button.incorrecta.marcada {
+  background: #ffebee;
+  border-color: var(--bad);
+  box-shadow: 0 0 0 3px rgba(249,115,115,0.35);
+}
+
+/* Ocupa toda la fila cuando el JS indica aria-busy */
+.opciones[aria-busy="true"] button {
+  pointer-events: none;
+  filter: grayscale(.15) opacity(.9);
+}
+
+/* ===== Acciones (Mostrar pista, Siguiente, Volver a jugar) ===== */
+.acciones {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.acciones button,
+.acciones a {
+  width: clamp(160px, 40%, 260px);
+  text-align: center;
+}
+
 /* ===== Botones ===== */
 .btn {
   border: none;
   border-radius: 16px;
   cursor: pointer;
   font-weight: 800;
-  padding: 0.95rem 1.2rem;
-  min-height: 48px;
-  font-size: 1.02rem;
-  transition: transform 0.08s ease, filter 0.15s ease;
+  padding: 0.9rem 1.2rem;
+  transition: transform .08s ease, filter .15s ease;
 }
 
 .btn:hover {
@@ -109,65 +219,22 @@
   outline-offset: 3px;
 }
 
+/* Botón principal — verde */
 .btn.principal {
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
+  background: var(--falltem-accent);
+  color: white;
 }
 
+/* Botón secundario — celeste */
 .btn.secundario {
-  background: var(--btn-sec-bg);
-  color: var(--btn-sec-fg);
+  background: var(--falltem-accent2);
+  color: #05323a;
 }
 
+/* Botón informativo — amarillo (Mostrar pista) */
 .btn.info {
-  background: var(--btn-info-bg);
-  color: var(--btn-info-fg);
-}
-
-/* ===== Opciones ===== */
-.opciones {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: 1fr;
-}
-@media (min-width: 820px) {
-  .opciones {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.opciones button {
-  width: 100%;
-  text-align: left;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  padding: 1.1rem 1.2rem;
-  font-weight: 800;
-  font-size: clamp(1.05rem, 0.6vw + 1rem, 1.25rem);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(15,23,42,0.08);
-  transition: transform 0.15s, border-color 0.15s, background 0.15s;
-}
-
-.opciones button:hover,
-.opciones button:focus-visible {
-  transform: translateY(-1px);
-  border-color: var(--focus);
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
-}
-
-.opciones button.correcta.marcada {
-  background: #e8f5e9;
-  border-color: var(--ok);
-  box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
-}
-
-.opciones button.incorrecta.marcada {
-  background: #ffebee;
-  border-color: var(--bad);
-  box-shadow: 0 0 0 3px rgba(249,115,115,0.35);
+  background: var(--falltem-info);
+  color: #3a2704;
 }
 
 /* ===== Progreso ===== */
@@ -178,7 +245,6 @@
   overflow: hidden;
   margin: 0.8rem 0;
 }
-
 .progresoBar > div {
   height: 100%;
   background: var(--accent);
@@ -186,7 +252,7 @@
   transition: width 0.25s ease;
 }
 
-/* ===== HUD ===== */
+/* ===== Estado ===== */
 .estado {
   margin-top: 1rem;
   font-size: 0.95rem;
@@ -194,7 +260,7 @@
   text-align: center;
 }
 
-/* ===== FAB Ayuda (idéntico a memoria) ===== */
+/* ===== FAB ===== */
 .fab-stack {
   position: fixed;
   right: max(12px, env(safe-area-inset-right, 0));
@@ -210,25 +276,29 @@
   height: 40px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: #ffffff;
   color: #111827;
   font-weight: 900;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   box-shadow: 0 2px 8px rgba(15,23,42,0.18);
+}
+.fab:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 
 /* ===== Modal ===== */
 .modal {
   position: fixed;
   inset: 0;
-  display: none;
   background: rgba(15,23,42,0.55);
+  display: none;
+  padding: 1rem;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
   z-index: 50;
 }
 .modal[aria-hidden="false"] {
@@ -240,22 +310,50 @@
   border-radius: 16px;
   padding: 1.5rem;
   border: 1px solid var(--border);
-  max-width: 640px;
+  max-width: 700px;
   width: 100%;
-  box-shadow: 0 20px 40px rgba(15,23,42,0.32);
+  max-height: 85vh;
+  overflow: auto;
   position: relative;
+  box-shadow: 0 20px 40px rgba(15,23,42,0.32);
 }
 
 .modal-title {
   margin: 0 0 1rem;
-  font-size: 1.25rem;
   font-weight: 900;
+  font-size: 1.4rem;
+}
+
+.modal-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.modal-tab {
+  flex: 1;
+  padding: 0.6rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.modal-tab[aria-selected="true"] {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.modal-panel {
+  margin-bottom: 1.5rem;
 }
 
 .btn-x {
   position: absolute;
-  top: 0.6rem;
-  right: 0.6rem;
+  top: 10px;
+  right: 10px;
   background: transparent;
   border: none;
   font-size: 1.4rem;
