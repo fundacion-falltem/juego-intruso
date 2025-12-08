@@ -1,268 +1,220 @@
-'use strict';
+/* ======================================================
+   FALLTEM — Juego del Intruso
+   Lógica original + UI limpia
+====================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  /* ===== Versión ===== */
-  const VERSION = "Intruso v2.3.1";
-  const versionEl = document.getElementById('versionLabel');
-  if (versionEl) versionEl.textContent = VERSION;
 
-  /* ===== Catálogo (fallback interno simple) ===== */
-  const CAT = Object.freeze({
-    "Frutas": Object.freeze(["manzana","pera","naranja","banana","uva","limón","frutilla","sandía","melón","durazno"]),
-    "Verduras": Object.freeze(["zanahoria","tomate","lechuga","cebolla","papa","zapallo","pepino","berenjena","espinaca","brócoli"]),
-    "Animales": Object.freeze(["perro","gato","vaca","caballo","oveja","cerdo","cabra","burro","toro","ciervo"]),
-    "Aves": Object.freeze(["paloma","gorrión","águila","loro","gallo","pavo","canario","búho","cisne","flamenco"]),
-    "Herramientas": Object.freeze(["martillo","destornillador","llave inglesa","sierra","alicate","tenaza","cinta métrica","taladro","nivel","pala"]),
-    "Transportes": Object.freeze(["auto","colectivo","tren","avión","bicicleta","barco","moto","tranvía","subte","camión"]),
-    "Ropa": Object.freeze(["camisa","pantalón","abrigo","gorra","bufanda","medias","falda","suéter","remera","campera"]),
-    "Comidas": Object.freeze(["sopa","ensalada","pasta","arroz","pizza","empanada","milanesa","guiso","asado","puré"])
-  });
-  let CAT_ACTIVO = CAT;
+  /* ====== Estado ====== */
+  let rondaActual = 0;
+  let totalRondas = 0;
+  let correctas = 0;
 
-  /* ===== Estado ===== */
-  let rondasTotales = 8, ronda = 0, aciertos = 0, nOpc = 4, bar;
-  let categoriaActual = null, ultimaCategoria = null;
+  const btnComenzar = document.getElementById("btnComenzar");
+  const rondasEl = document.getElementById("rondas");
+  const opcionesEl = document.getElementById("opciones");
+  const juegoEl = document.getElementById("juego");
+  const progresoEl = document.getElementById("progreso");
+  const aciertosEl = document.getElementById("aciertos");
+  const versionEl = document.getElementById("versionLabel");
 
-  /* ===== Refs ===== */
-  const juegoEl     = document.getElementById('juego');
-  const progresoEl  = document.getElementById('progreso');
-  const aciertosHUD = document.getElementById('aciertos');
-  const btnComenzar = document.getElementById('btnComenzar');
+  versionEl.textContent = "v2.3.31";
 
-  const selRondas   = document.getElementById('rondas');
-  const selOpc      = document.getElementById('opciones');
-
-  // FABs / Modal
-  const aboutBtn      = document.getElementById('aboutBtn');
-  const aboutModal    = document.getElementById('aboutModal');
-  const aboutClose    = document.getElementById('aboutClose');
-  const aboutCloseTop = document.getElementById('aboutCloseTop');
-
-  /* ===== Utils ===== */
-  const barajar = (arr)=>{ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; };
-  const sample  = (arr,k)=>{ const c=[...arr]; barajar(c); return c.slice(0, Math.min(k, c.length)); };
-  const el = (tag, cls, text)=>{ const n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=String(text); return n; };
-
-  const elegirCategoria = (excluir = [])=>{
-    const excl = Array.isArray(excluir) ? excluir : [excluir];
-    const keys = Object.keys(CAT_ACTIVO).filter(k=> !excl.includes(k));
-    return keys[Math.floor(Math.random()*keys.length)];
-  };
-
-  function actualizar(){
-    progresoEl.textContent = `${Math.min(ronda, rondasTotales)}/${rondasTotales}`;
-    aciertosHUD.textContent = String(aciertos);
-    if (bar) { bar.style.width = Math.round((Math.min(ronda, rondasTotales)/rondasTotales)*100) + "%"; }
-  }
-
-  function construirRonda(){
-    categoriaActual = elegirCategoria(ultimaCategoria ? [ultimaCategoria] : []);
-    const otra = elegirCategoria([categoriaActual]);
-
-    const correctas = sample(CAT_ACTIVO[categoriaActual], Math.max(2, nOpc-1));
-    const intruso = sample(CAT_ACTIVO[otra], 1)[0];
-
-    let opciones = barajar([
-      ...correctas.map(x=>({txt:x, ok:false})),
-      {txt:intruso, ok:true, catIntruso:otra}
-    ]).slice(0, nOpc);
-
-    if (!opciones.some(o=>o.ok)){
-      opciones[0] = {txt:intruso, ok:true, catIntruso:otra};
-      barajar(opciones);
+  /* ===== Categorías ===== */
+  const categorias = [
+    {
+      tema: "Frutas",
+      opciones: ["manzana", "pera", "banana", "colectivo"],
+      intruso: 3,
+      pista: "Tres son frutas; una es transporte."
+    },
+    {
+      tema: "Transporte",
+      opciones: ["auto", "tren", "avión", "sandía"],
+      intruso: 3,
+      pista: "Tres son vehículos; sandía es fruta."
+    },
+    {
+      tema: "Colores",
+      opciones: ["rojo", "verde", "azul", "arroz"],
+      intruso: 3,
+      pista: "Tres son colores; arroz no."
+    },
+    {
+      tema: "Ropa",
+      opciones: ["remera", "camisa", "zapato", "helado"],
+      intruso: 3,
+      pista: "Tres son prendas; helado es comida."
+    },
+    {
+      tema: "Animales",
+      opciones: ["perro", "gato", "caballo", "silla"],
+      intruso: 3,
+      pista: "Tres son animales; silla es objeto."
     }
-    ultimaCategoria = categoriaActual;
-    return opciones;
-  }
-
-  function resetOpciones(container){
-    container.querySelectorAll('button').forEach(b=>{
-      b.disabled = false;
-      b.className = b.className.replace(/\bmarcada\b/g,'');
-      b.removeAttribute('aria-disabled');
-    });
-    container.removeAttribute('aria-busy');
-  }
-
-  function crearAcciones(fb){
-    const tpl = document.querySelector('#accionesPlantilla .acciones');
-    const acciones = tpl ? tpl.cloneNode(true) : el('div','acciones');
-    const btnPistaLocal = acciones.querySelector?.('.btn-pista');
-    if (btnPistaLocal){
-      btnPistaLocal.hidden = false;
-      btnPistaLocal.addEventListener('click', ()=>{
-        fb.className = 'feedback';
-        fb.textContent = `Pista: categoría del grupo = “${categoriaActual}”.`;
-        fb.focus();
-      });
-    }
-    const next = el('button','btn principal','Siguiente');
-    next.disabled = true; next.setAttribute('aria-disabled','true');
-    acciones.appendChild(next);
-    return { acciones, next };
-  }
-
-  function renderPregunta(){
-    if (ronda >= rondasTotales){ renderFin(); return; }
-
-    const opciones = construirRonda();
-    juegoEl.innerHTML = '';
-
-    const tarjeta = el('div','tarjeta');
-    tarjeta.setAttribute('role','group'); tarjeta.setAttribute('aria-labelledby','enunciado');
-
-    const pb = el('div','progresoBar'); pb.setAttribute('aria-hidden','true');
-    const fill = el('div'); pb.appendChild(fill); bar = fill; actualizar();
-
-    const enunciado = el('p','pregunta'); enunciado.id='enunciado';
-    enunciado.textContent = '🧠 ¿Qué palabra no pertenece al grupo?';
-
-    const cont = el('div','opciones');
-
-    const fb = el('p','feedback'); fb.setAttribute('role','status'); fb.setAttribute('aria-live','polite'); fb.setAttribute('aria-atomic','true'); fb.tabIndex = -1;
-
-    const { acciones, next } = crearAcciones(fb);
-
-    opciones.forEach((op, i)=>{
-      const b = el('button', op.ok ? 'correcta' : 'incorrecta');
-      b.setAttribute('aria-label', `Opción ${i+1}: ${op.txt}`);
-      b.appendChild(el('strong', null, `${i+1}.`));
-      b.appendChild(document.createTextNode(' ' + op.txt));
-      b.addEventListener('click', ()=> elegir(b, op, cont, fb, next));
-      cont.appendChild(b);
-    });
-
-    tarjeta.appendChild(pb);
-    tarjeta.appendChild(enunciado);
-    tarjeta.appendChild(cont);
-    tarjeta.appendChild(fb);
-    tarjeta.appendChild(acciones);
-    juegoEl.appendChild(tarjeta);
-
-    resetOpciones(cont);
-    requestAnimationFrame(()=>{
-      cont.querySelector('button')?.focus({preventScroll:true});
-      tarjeta.scrollIntoView({behavior:'smooth', block:'start'});
-    });
-
-    const onKey = (e)=>{ const n = Number.parseInt(e.key,10); if(Number.isInteger(n) && n>=1 && n<=5){ cont.children[n-1]?.click(); } };
-    document.addEventListener('keydown', onKey, { once:true });
-  }
-
-  function elegir(btn, op, cont, fb, next){
-    cont.setAttribute('aria-busy','true');
-    cont.querySelectorAll('button').forEach(b => b.disabled = true);
-    btn.classList.add('marcada');
-
-    if(op.ok){
-      aciertos++;
-      fb.className = 'feedback ok';
-      fb.textContent = `✔ Correcto. El intruso es “${op.txt}”. La categoría del grupo era “${categoriaActual}”.`;
-    } else {
-      fb.className = 'feedback bad';
-      fb.textContent = `✘ Casi. La categoría del grupo era “${categoriaActual}”.`;
-    }
-    fb.focus();
-
-    next.disabled = false; next.setAttribute('aria-disabled','false');
-
-    const acciones = next.parentElement;
-    const nextClon = next.cloneNode(true);
-    acciones.replaceChild(nextClon, next);
-    nextClon.addEventListener('click', ()=>{
-      ronda++; actualizar(); renderPregunta();
-    }, { once:true });
-
-    setTimeout(()=> cont.removeAttribute('aria-busy'), 120);
-  }
-
-  /* ===== Feedback por desempeño (positivo) ===== */
-  function tituloPorDesempeno(aciertosVal, totalVal){
-    if (!totalVal) return "¡Gracias por jugar!";
-    if (aciertosVal === 0) return "¡Buen comienzo!";
-    const r = aciertosVal / totalVal;
-    if (r < 0.35) return "¡Buen intento!";
-    if (r < 0.60) return "¡Vas encaminado!";
-    if (r < 0.85) return "¡Muy bien!";
-    return "¡Excelente!";
-  }
-  function mensajePorDesempeno(aciertosVal, totalVal){
-    const r = totalVal ? (aciertosVal / totalVal) : 0;
-    if (aciertosVal === 0) {
-      return "¡Muy bien por practicar! Empezá con menos opciones y a tu ritmo.";
-    } else if (r < 0.35) {
-      return "¡Buen intento! Probá con menos opciones y andá subiendo de a poco.";
-    } else if (r < 0.60) {
-      return "¡Vas encaminado! Mantené la calma y apoyate en la pista cuando aparezca.";
-    } else if (r < 0.85) {
-      return "¡Bien! Si querés, subí la dificultad.";
-    } else {
-      return "¡Excelente precisión! Probá un reto con más opciones.";
-    }
-  }
-
-  function renderFin(){
-    juegoEl.innerHTML = '';
-
-    const tarjeta = el('div','tarjeta');
-
-    const totalSeguro = Math.max(1, Number(rondasTotales) || 1);
-    const tituloTxt   = tituloPorDesempeno(aciertos, totalSeguro);
-    const titulo = el('p','pregunta',`🎉 ${tituloTxt}`);
-    tarjeta.appendChild(titulo);
-
-    tarjeta.appendChild(el('p', null, `Tu resultado: ${aciertos} de ${rondasTotales}.`));
-    tarjeta.appendChild(el('p', null, mensajePorDesempeno(aciertos, totalSeguro)));
-    tarjeta.appendChild(el('p', null, 'Podés volver a jugar cambiando las opciones del juego.'));
-
-    const ctas = el('div','acciones');
-    const btnRejugar = el('button','btn principal','Volver a jugar');
-    btnRejugar.addEventListener('click', ()=>{
-      ronda=0; aciertos=0; ultimaCategoria=null; actualizar(); renderPregunta();
-    });
-
-    const aOtros = document.createElement('a');
-    aOtros.href = 'https://falltem.org/juegos/#games-cards';
-    aOtros.className = 'btn secundario';
-    aOtros.textContent = 'Elegir otro juego';
-    aOtros.target = '_blank'; aOtros.rel = 'noopener noreferrer';
-
-    ctas.appendChild(btnRejugar);
-    ctas.appendChild(aOtros);
-    tarjeta.appendChild(ctas);
-
-    juegoEl.appendChild(tarjeta);
-    tarjeta.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-
-  /* ===== Inicio ===== */
-  function comenzar(){
-    rondasTotales = Number(selRondas.value);
-    nOpc = Number(selOpc.value);
-    ronda = 0; aciertos = 0; ultimaCategoria = null;
-    actualizar();
-    renderPregunta();
-  }
-
-  btnComenzar?.addEventListener('click', comenzar);
+  ];
 
   /* ===== Modal ===== */
-  function openAbout(){
-    if (!aboutModal) return;
-    aboutModal.setAttribute('aria-hidden','false');
-    document.body.classList.add('modal-open');
-    (aboutCloseTop || aboutClose)?.focus();
+  const aboutBtn = document.getElementById("aboutBtn");
+  const aboutModal = document.getElementById("aboutModal");
+  const aboutClose = document.getElementById("aboutClose");
+  const aboutCloseTop = document.getElementById("aboutCloseTop");
+
+  function abrirModal() {
+    aboutModal.setAttribute("aria-hidden", "false");
+    aboutBtn.setAttribute("aria-expanded", "true");
   }
-  function closeAbout(){
-    if (!aboutModal) return;
-    aboutModal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
+  function cerrarModal() {
+    aboutModal.setAttribute("aria-hidden", "true");
+    aboutBtn.setAttribute("aria-expanded", "false");
   }
-  aboutBtn?.addEventListener('click', openAbout);
-  aboutClose?.addEventListener('click', closeAbout);
-  aboutCloseTop?.addEventListener('click', closeAbout);
-  aboutModal?.addEventListener('click', (e)=>{ if(e.target===aboutModal) closeAbout(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
+
+  aboutBtn?.addEventListener("click", abrirModal);
+  aboutClose?.addEventListener("click", cerrarModal);
+  aboutCloseTop?.addEventListener("click", cerrarModal);
+
+  aboutModal?.addEventListener("click", e => {
+    if (e.target === aboutModal) cerrarModal();
+  });
+
+  /* ====== Juego ====== */
+
+  btnComenzar.addEventListener("click", iniciar);
+
+  function iniciar() {
+    rondaActual = 0;
+    correctas = 0;
+    totalRondas = Number(rondasEl.value);
+    juegoEl.innerHTML = "";
+    siguienteRonda();
+  }
+
+  function siguienteRonda() {
+    if (rondaActual >= totalRondas) {
+      return mostrarFinal();
+    }
+
+    const data = categorias[Math.floor(Math.random() * categorias.length)];
+    renderRonda(data);
+    rondaActual++;
+    actualizarHUD();
+  }
+
+  function actualizarHUD() {
+    progresoEl.textContent = `${rondaActual}/${totalRondas}`;
+    aciertosEl.textContent = correctas;
+  }
+
+  function renderRonda({ tema, opciones, intruso, pista }) {
+    const card = document.createElement("div");
+    card.className = "tarjeta";
+
+    const pregunta = document.createElement("p");
+    pregunta.className = "pregunta";
+    pregunta.textContent = "🧠 ¿Qué palabra no pertenece al grupo?";
+
+    const lista = document.createElement("div");
+    lista.className = "opciones";
+
+    opciones.forEach((txt, i) => {
+      const b = document.createElement("button");
+
+      // Número + texto (DOM real compatible con CSS actual)
+      const num = document.createElement("strong");
+      num.textContent = i + 1;
+
+      b.appendChild(num);
+      b.appendChild(document.createTextNode(" " + txt));
+
+      b.addEventListener("click", () => {
+        marcar(b, i === intruso, intruso, lista);
+        mostrarAcciones(card, pista);
+      });
+
+      lista.appendChild(b);
+    });
+
+    card.appendChild(pregunta);
+    card.appendChild(lista);
+    juegoEl.innerHTML = "";
+    juegoEl.appendChild(card);
+  }
+
+  function marcar(boton, esCorrecta, idxIntruso, lista) {
+    [...lista.children].forEach((btn, idx) => {
+      if (idx === idxIntruso) {
+        btn.classList.add("correcta", "marcada");
+      } 
+      if (btn === boton && !esCorrecta) {
+        btn.classList.add("incorrecta", "marcada");
+      }
+      btn.disabled = true;
+    });
+
+    if (esCorrecta) correctas++;
+  }
+
+  function mostrarAcciones(card, pista) {
+    if (card.querySelector(".acciones")) return;
+
+    const box = document.createElement("div");
+    box.className = "acciones";
+
+    const btnPista = document.createElement("button");
+    btnPista.className = "btn info";
+    btnPista.textContent = "Mostrar pista";
+
+    const btnSig = document.createElement("button");
+    btnSig.className = "btn principal";
+    btnSig.textContent = "Siguiente";
+
+    btnPista.addEventListener("click", () => {
+      if (!card.querySelector(".pista")) {
+        const p = document.createElement("div");
+        p.className = "pista";
+        p.textContent = pista;
+        card.insertBefore(p, box);
+      }
+      btnPista.disabled = true;
+    });
+
+    btnSig.addEventListener("click", siguienteRonda);
+
+    box.append(btnPista, btnSig);
+    card.appendChild(box);
+  }
+
+  function mostrarFinal() {
+    const card = document.createElement("div");
+    card.className = "tarjeta";
+
+    card.innerHTML = `
+      <p class="pregunta">🎉 ¡Felicitaciones!</p>
+      <p>Tu resultado: ${correctas} de ${totalRondas}.</p>
+    `;
+
+    const box = document.createElement("div");
+    box.className = "acciones";
+
+    const btnReint = document.createElement("button");
+    btnReint.className = "btn principal";
+    btnReint.textContent = "Volver a jugar";
+    btnReint.onclick = iniciar;
+
+    const btnOtros = document.createElement("a");
+    btnOtros.className = "btn secundario";
+    btnOtros.href = "https://fundacion-falltem.github.io/juegos/";
+    btnOtros.textContent = "Elegir otro juego";
+
+    box.append(btnReint, btnOtros);
+    card.append(box);
+
+    juegoEl.innerHTML = "";
+    juegoEl.appendChild(card);
+
+    progresoEl.textContent = `${totalRondas}/${totalRondas}`;
+  }
+
 
 
 

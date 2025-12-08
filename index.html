@@ -7,23 +7,23 @@
   <title>¿Cuál es el intruso? — Juegos Cognitivos FALLTEM</title>
   <meta name="description" content="Juego cognitivo accesible: elegí el elemento que no pertenece al grupo. Estimula categorización, control inhibitorio y atención sostenida.">
 
-  <!-- Fuente Montserrat -->
+  <!-- Fuente -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Tailwind (CDN configurado) -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Tokens FALLTEM -->
+  <!-- Tokens -->
   <link rel="stylesheet" href="css/falltem-tokens.css">
 
-  <!-- Estilos del juego Intruso -->
+  <!-- Estilos específicos del juego -->
   <link rel="stylesheet" href="css/intruso.css">
 </head>
 
 <body>
-  <!-- Skip -->
+  <!-- Accesibilidad -->
   <a href="#juego" class="skip">Saltar al juego</a>
 
   <!-- FAB ayuda -->
@@ -31,20 +31,22 @@
     <button id="aboutBtn" class="fab" aria-haspopup="dialog" aria-controls="aboutModal" aria-expanded="false">?</button>
   </div>
 
-  <!-- WRAPPER PRINCIPAL -->
+  <!-- Contenedor principal -->
   <main class="wrap" role="main" aria-labelledby="titulo">
-
-    <!-- HEADER -->
+    
+    <!-- Header -->
     <header class="header">
       <p class="header-label">Juegos Cognitivos FALLTEM</p>
       <h1 id="titulo">¿Cuál es el intruso?</h1>
+
       <p class="intro">
-        Observá el conjunto y elegí el elemento que <strong>no pertenece</strong>.  
+        Observá el conjunto y elegí el elemento que <strong>no pertenece</strong>.
         Sin límite de tiempo: jugá a tu ritmo.
       </p>
 
-      <!-- CONTROLES -->
+      <!-- Controles -->
       <section class="controles" aria-label="Controles del juego">
+        
         <div class="control">
           <label for="rondas">Rondas</label>
           <select id="rondas">
@@ -66,13 +68,14 @@
         <div class="control control--actions">
           <button id="btnComenzar" class="btn principal" type="button">Comenzar</button>
         </div>
+
       </section>
     </header>
 
-    <!-- JUEGO (contenido dinámico) -->
+    <!-- Juego -->
     <section id="juego" class="juego" aria-live="polite"></section>
 
-    <!-- PLANTILLA PARA ACCIONES EN TARJETA -->
+    <!-- Template de acciones dinámicas -->
     <div id="accionesPlantilla" hidden>
       <div class="acciones acciones-en-tarjeta">
         <button class="btn info btn-pista" type="button" hidden>Mostrar pista</button>
@@ -84,7 +87,7 @@
       <p>Progreso: <strong id="progreso">0/0</strong> · Aciertos: <strong id="aciertos">0</strong></p>
     </section>
 
-    <!-- CRÉDITOS -->
+    <!-- Footer -->
     <footer class="mini-credit">
       <p>
         <strong class="mini-label">Créditos y aviso:</strong>
@@ -95,16 +98,15 @@
     </footer>
   </main>
 
-  <!-- =========================================================
-       MODAL UNIFICADO (CON TABS) — igual a Memoria
-  ========================================================== -->
-  <div id="aboutModal" class="modal" aria-hidden="true" aria-labelledby="aboutTitle" aria-modal="true">
-    <div class="modal-card" role="document" tabindex="-1">
+  <!-- Modal -->
+  <div id="aboutModal" class="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" tabindex="-1">
 
       <button id="aboutCloseTop" class="btn-x" aria-label="Cerrar">×</button>
+
       <h2 id="aboutTitle" class="modal-title">¿Cuál es el intruso?</h2>
 
-      <!-- TABS -->
+      <!-- Tabs -->
       <div class="modal-tabs">
         <button id="aboutTabHow" class="modal-tab" type="button" aria-selected="true">
           ¿Cómo se juega?
@@ -115,7 +117,7 @@
         </button>
       </div>
 
-      <!-- PANEL: ¿Cómo se juega? -->
+      <!-- Panel 1 -->
       <div id="aboutPanelHow" class="modal-panel">
         <p>El objetivo es elegir la palabra que <strong>no pertenece</strong> al grupo.</p>
         <ul>
@@ -125,56 +127,70 @@
           <li>Si necesitás ayuda, usá <strong>Mostrar pista</strong>.</li>
           <li>No hay límite de tiempo: respondé con calma.</li>
         </ul>
-        <p class="muted"><small>
-          Podés aumentar opciones o rondas para un desafío mayor.
-        </small></p>
       </div>
 
-      <!-- PANEL: ¿Por qué este juego? -->
+      <!-- Panel 2 -->
       <div id="aboutPanelWhy" class="modal-panel" hidden>
-        <p>
-          Este ejercicio entrena:
-        </p>
+        <p>Este ejercicio trabaja:</p>
         <ul>
-          <li><strong>Categorización</strong>: identificar relaciones entre conceptos.</li>
-          <li><strong>Control inhibitorio</strong>: evitar respuestas impulsivas.</li>
-          <li><strong>Atención sostenida</strong>: mantener la consigna sin distraerse.</li>
-          <li><strong>Flexibilidad cognitiva</strong>: cambiar criterio cuando es necesario.</li>
+          <li><strong>Categorización</strong></li>
+          <li><strong>Control inhibitorio</strong></li>
+          <li><strong>Atención sostenida</strong></li>
+          <li><strong>Flexibilidad cognitiva</strong></li>
         </ul>
 
         <h3>Fundamento</h3>
         <p>
           1) Lampit A. et al., <em>PLOS Medicine</em>, 2014 —  
-          meta-análisis con mejoras modestas cuando el diseño es adecuado.
+          meta-análisis sobre entrenamiento cognitivo.
         </p>
         <p>
-          2) Anguera J.A. et al., <em>Nature</em>, 2013 —  
-          entrenamiento de control/atención con beneficios sostenidos.
+          2) Anguera J.A. et al., <em>Nature</em>, 2013 —
+          estudio sobre control y atención con beneficios sostenidos.
         </p>
 
         <p class="muted small-links">
-          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4381540/" target="_blank" rel="noopener noreferrer">
-            Ver meta-análisis (PLOS Medicine)
-          </a> ·
-          <a href="https://www.nature.com/articles/nature12486" target="_blank" rel="noopener noreferrer">
-            Estudio Nature
-          </a>
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4381540/" target="_blank">Meta-análisis</a> ·
+          <a href="https://www.nature.com/articles/nature12486" target="_blank">Estudio Nature</a>
         </p>
-
-        <p class="muted"><small>
-          Actividad lúdica; no es práctica médica. No recolectamos datos personales.
-        </small></p>
       </div>
 
       <div class="modal-actions">
         <button id="aboutClose" class="btn principal" type="button">Entendido</button>
       </div>
+
     </div>
   </div>
 
-  <!-- JS PRINCIPAL -->
+  <!-- JS principal -->
   <script src="app.js"></script>
 
+  <!-- JS TABS (tal cual vos pediste) -->
+  <script>
+    const tabHow = document.getElementById("aboutTabHow");
+    const tabWhy = document.getElementById("aboutTabWhy");
+    const panelHow = document.getElementById("aboutPanelHow");
+    const panelWhy = document.getElementById("aboutPanelWhy");
+
+    function selectTab(showHow) {
+      if (showHow) {
+        tabHow.setAttribute("aria-selected", "true");
+        tabWhy.setAttribute("aria-selected", "false");
+        tabWhy.setAttribute("tabindex", "-1");
+        panelHow.hidden = false;
+        panelWhy.hidden = true;
+      } else {
+        tabHow.setAttribute("aria-selected", "false");
+        tabWhy.setAttribute("aria-selected", "true");
+        tabWhy.removeAttribute("tabindex");
+        panelHow.hidden = true;
+        panelWhy.hidden = false;
+      }
+    }
+
+    tabHow.addEventListener("click", () => selectTab(true));
+    tabWhy.addEventListener("click", () => selectTab(false));
+  </script>
 
 </body>
 </html>

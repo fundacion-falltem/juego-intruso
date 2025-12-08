@@ -3,7 +3,7 @@
    Depende de: falltem-tokens.css
 ====================================================== */
 
-/* ===== Contenedor principal ===== */
+/* ===== Layout global ===== */
 .wrap {
   max-width: 860px;
   margin: 2.5rem auto;
@@ -13,65 +13,68 @@
   box-shadow: 0 18px 55px rgba(15,23,42,0.12);
 }
 
+.skip {
+  position: absolute;
+  top: -40px;
+  left: 10px;
+}
+.skip:focus {
+  top: 10px;
+  background: #fff;
+  padding: .5rem 1rem;
+  border-radius: 8px;
+  z-index: 200;
+}
+
 /* ===== Header ===== */
 .header {
   max-width: 760px;
   margin: 0 auto var(--space);
-  text-align: left;
 }
-
 .header-label {
-  font-size: 0.75rem;
+  font-size: .75rem;
   font-weight: 800;
-  letter-spacing: 0.07em;
+  letter-spacing: .07em;
   text-transform: uppercase;
   color: var(--label-brand);
 }
-
 .header h1 {
-  margin: 0.3rem 0 0.5rem;
+  margin: .3rem 0 .5rem;
   font-size: clamp(2.1rem, 2.1vw + 1.3rem, 2.7rem);
   font-weight: 900;
 }
-
 .intro {
-  margin: 0;
   max-width: 40rem;
   color: var(--muted);
 }
 
 /* ===== Controles ===== */
 .controles {
-  max-width: 460px;
-  margin: 1.4rem auto;
+  max-width: 480px;
+  margin: 1.6rem auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  align-items: flex-end;
 }
-
 .control {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: .35rem;
 }
-
 .control label {
   font-weight: 900;
-  opacity: 0.98;
 }
-
 .control--actions {
   grid-column: 1 / -1;
 }
 
-/* ===== Selects ===== */
+/* Selects */
 select {
   background: var(--card);
   color: var(--fg);
   border: 1px solid var(--border);
-  padding: 0.8rem 1rem;
-  border-radius: 0.8rem;
+  padding: .8rem 1rem;
+  border-radius: .8rem;
   font-size: 1.05rem;
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5.5 7l4.5 5 4.5-5z'/></svg>");
@@ -81,43 +84,24 @@ select {
   padding-right: 2.4rem;
 }
 
-/* ===== Juego ===== */
+/* ===== Área del juego ===== */
 .juego {
   display: grid;
   gap: 1.6rem;
   margin-top: 1rem;
 }
 
-/* Card donde se muestra cada ronda */
+/* Tarjeta de ronda */
 .tarjeta {
   background: var(--card);
-  border-radius: 20px;
   border: 1px solid var(--border);
+  border-radius: 20px;
   padding: var(--space);
   box-shadow: 0 2px 10px rgba(15,23,42,0.08);
 }
-
 .pregunta {
-  margin: 0 0 0.5rem;
   font-size: clamp(1.6rem, 1.4vw + 1rem, 2rem);
   font-weight: 900;
-}
-
-/* ===== Pista ===== */
-.pista {
-  display: block;
-  background: rgba(95,203,224,.14);
-  border: 1px solid rgba(95,203,224,.45);
-  color: #05323a;
-  padding: .7rem .9rem;
-  border-radius: 12px;
-  margin: .2rem 0 .8rem;
-  font-weight: 700;
-}
-.pista::before {
-  content:"💡 ";
-  font-weight: 900;
-  margin-right:.25rem;
 }
 
 /* ===== Opciones ===== */
@@ -127,35 +111,26 @@ select {
   grid-template-columns: 1fr;
 }
 @media (min-width: 820px) {
-  .opciones {
-    grid-template-columns: 1fr 1fr;
-  }
+  .opciones { grid-template-columns: 1fr 1fr; }
 }
 
 .opciones button {
   width: 100%;
   padding: 1rem 1.2rem;
-  text-align: left;
-
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: .7rem;
 
   background: var(--card);
   border: 2px solid var(--border);
   border-radius: 18px;
 
+  font-size: clamp(1.05rem, .6vw + 1rem, 1.25rem);
   font-weight: 800;
-  font-size: clamp(1.05rem, 0.6vw + 1rem, 1.25rem);
+
+  box-shadow: 0 3px 8px rgba(15,23,42,.08);
   cursor: pointer;
-
-  box-shadow: 0 3px 8px rgba(15,23,42,0.08);
-
-  transition:
-    transform .12s ease,
-    border-color .15s ease,
-    background-color .15s ease,
-    box-shadow .15s ease;
+  transition: transform .12s ease, border-color .15s, box-shadow .15s;
 }
 
 .opciones button:hover,
@@ -166,74 +141,101 @@ select {
   outline-offset: 3px;
 }
 
-/* Estados correcto/incorrecto */
+/* Chip numérico generado por <strong> */
+.opciones button strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 34px;
+  height: 34px;
+
+  margin-right: .4rem;
+
+  background: rgba(129,200,132,0.18);
+  color: var(--accent);
+
+  font-weight: 900;
+  border-radius: 999px;
+  border: 1px solid rgba(129,200,132,0.45);
+}
+
+/* Estados */
 .opciones button.correcta.marcada {
   background: #e8f5e9;
   border-color: var(--ok);
-  box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
+  box-shadow: 0 0 0 3px rgba(34,197,94,.35);
 }
+.opciones button.correcta.marcada strong {
+  background: #c8f7cf;
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
 .opciones button.incorrecta.marcada {
   background: #ffebee;
   border-color: var(--bad);
-  box-shadow: 0 0 0 3px rgba(249,115,115,0.35);
+  box-shadow: 0 0 0 3px rgba(249,115,115,.35);
+}
+.opciones button.incorrecta.marcada strong {
+  background: #ffd4d4;
+  border-color: var(--bad);
+  color: var(--bad);
 }
 
-/* Ocupa toda la fila cuando el JS indica aria-busy */
-.opciones[aria-busy="true"] button {
-  pointer-events: none;
-  filter: grayscale(.15) opacity(.9);
-}
-
-/* ===== Acciones (Mostrar pista, Siguiente, Volver a jugar) ===== */
+/* ===== Acciones (pista, siguiente, final) ===== */
 .acciones {
-  margin-top: 1.2rem;
+  margin-top: 1.3rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.8rem;
+  gap: .8rem;
 }
-
 .acciones button,
 .acciones a {
-  width: clamp(160px, 40%, 260px);
-  text-align: center;
+  width: clamp(160px, 42%, 260px);
+}
+
+/* Pista */
+.pista {
+  background: rgba(95,203,224,.14);
+  border: 1px solid rgba(95,203,224,.45);
+  color: #05323a;
+  padding: .7rem 1rem;
+  border-radius: 12px;
+  margin-top: .4rem;
+  font-weight: 700;
 }
 
 /* ===== Botones ===== */
 .btn {
   border: none;
   border-radius: 16px;
-  cursor: pointer;
   font-weight: 800;
-  padding: 0.9rem 1.2rem;
-  transition: transform .08s ease, filter .15s ease;
+  padding: .9rem 1.2rem;
+  cursor: pointer;
+  transition: transform .1s ease, filter .15s ease;
 }
 
-.btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
-}
+.btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
 
 .btn:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
-/* Botón principal — verde */
 .btn.principal {
-  background: var(--falltem-accent);
+  background: var(--accent);
   color: white;
 }
 
-/* Botón secundario — celeste */
 .btn.secundario {
-  background: var(--falltem-accent2);
+  background: var(--accent-2);
   color: #05323a;
 }
 
-/* Botón informativo — amarillo (Mostrar pista) */
 .btn.info {
-  background: var(--falltem-info);
+  background: var(--info);
   color: #3a2704;
 }
 
@@ -243,31 +245,31 @@ select {
   background: var(--border);
   border-radius: 999px;
   overflow: hidden;
-  margin: 0.8rem 0;
+  margin: .8rem 0;
 }
 .progresoBar > div {
   height: 100%;
   background: var(--accent);
   width: 0%;
-  transition: width 0.25s ease;
+  transition: width .25s ease;
 }
 
-/* ===== Estado ===== */
+/* ===== HUD ===== */
 .estado {
   margin-top: 1rem;
-  font-size: 0.95rem;
-  color: var(--muted);
   text-align: center;
+  color: var(--muted);
+  font-size: .95rem;
 }
 
 /* ===== FAB ===== */
 .fab-stack {
   position: fixed;
-  right: max(12px, env(safe-area-inset-right, 0));
-  top: max(12px, env(safe-area-inset-top, 0));
+  right: max(12px, env(safe-area-inset-right));
+  top: max(12px, env(safe-area-inset-top));
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: .6rem;
   z-index: 40;
 }
 
@@ -276,63 +278,56 @@ select {
   height: 40px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: #ffffff;
+  background: white;
   color: #111827;
   font-weight: 900;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(15,23,42,0.18);
-}
-.fab:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
+  box-shadow: 0 2px 8px rgba(15,23,42,.18);
 }
 
 /* ===== Modal ===== */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(15,23,42,0.55);
+  background: rgba(15,23,42,.55);
   display: none;
   padding: 1rem;
   justify-content: center;
   align-items: center;
   z-index: 50;
 }
-.modal[aria-hidden="false"] {
-  display: flex;
-}
+.modal[aria-hidden="false"] { display: flex; }
 
 .modal-card {
   background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem;
-  border: 1px solid var(--border);
   max-width: 700px;
   width: 100%;
   max-height: 85vh;
   overflow: auto;
+  box-shadow: 0 20px 40px rgba(15,23,42,.32);
   position: relative;
-  box-shadow: 0 20px 40px rgba(15,23,42,0.32);
 }
 
 .modal-title {
-  margin: 0 0 1rem;
   font-weight: 900;
-  font-size: 1.4rem;
+  margin-bottom: 1rem;
 }
 
 .modal-tabs {
   display: flex;
-  gap: 0.4rem;
+  gap: .4rem;
   margin-bottom: 1rem;
 }
 
 .modal-tab {
   flex: 1;
-  padding: 0.6rem;
+  padding: .6rem;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -347,7 +342,7 @@ select {
 }
 
 .modal-panel {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
 }
 
 .btn-x {
@@ -356,7 +351,7 @@ select {
   right: 10px;
   background: transparent;
   border: none;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   cursor: pointer;
   color: var(--muted);
 }
@@ -368,5 +363,5 @@ select {
   border-top: 1px solid var(--border);
   text-align: center;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: .85rem;
 }
